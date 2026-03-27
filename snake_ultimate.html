@@ -1,0 +1,1094 @@
+<!DOCTYPE html>
+<html lang="de">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>SNAKE ULTIMATE</title>
+    <link href="https://fonts.googleapis.com/css2?family=Creepster&family=Orbitron:wght@400;700&family=Press+Start+2P&family=Varela+Round&display=swap" rel="stylesheet">
+    <style>
+        :root {
+            --bg-color: #0b0c10;
+            --ui-accent: #45a29e;
+            --text-color: #fff;
+            --font-family: 'Orbitron', sans-serif;
+            --menu-bg: rgba(0, 0, 0, 0.85);
+            --border-style: 4px solid var(--ui-accent);
+            --canvas-shadow: 0 0 20px var(--ui-accent);
+            --maiden-color: #45a29e;
+        }
+
+        /* --- THEME CSS OVERRIDES --- */
+        body[data-theme="cyberpunk"] {
+            --bg-color: #07080a;
+            --ui-accent: #00f3ff;
+            --text-color: #e0ffff;
+            --font-family: 'Orbitron', sans-serif;
+            --canvas-shadow: 0 0 30px #00f3ff, inset 0 0 20px rgba(0, 243, 255, 0.2);
+            --maiden-color: #ff0055;
+        }
+        
+        body[data-theme="retro"] {
+            --bg-color: #4a5c39; 
+            --ui-accent: #112211;
+            --text-color: #112211;
+            --font-family: 'Press Start 2P', monospace;
+            --menu-bg: rgba(139, 172, 15, 0.95);
+            --border-style: 10px solid #222;
+            --canvas-shadow: 10px 10px 0px rgba(0,0,0,0.5);
+            --maiden-color: #112211;
+        }
+
+        body[data-theme="ocean"] {
+            --bg-color: #001a33;
+            --ui-accent: #00ffcc;
+            --text-color: #e6ffff;
+            --font-family: 'Varela Round', sans-serif;
+            --menu-bg: rgba(0, 26, 51, 0.85);
+            --border-style: 8px solid #0059b3;
+            --canvas-shadow: 0 0 40px rgba(0, 255, 204, 0.3);
+            --maiden-color: #000033;
+        }
+
+        body[data-theme="inferno"] {
+            --bg-color: #1a0000;
+            --ui-accent: #ff3300;
+            --text-color: #ffb3b3;
+            --font-family: 'Creepster', cursive;
+            --menu-bg: rgba(26, 0, 0, 0.9);
+            --border-style: 4px dashed #ff3300;
+            --canvas-shadow: 0 0 50px rgba(255, 0, 0, 0.6);
+            --maiden-color: #4d0000;
+        }
+
+        /* --- BASE STYLES --- */
+        body {
+            display: flex;
+            flex-direction: column;
+            align-items: center;
+            height: 100vh;
+            margin: 0;
+            background-color: var(--bg-color);
+            font-family: var(--font-family);
+            color: var(--text-color);
+            overflow: hidden;
+            transition: background-color 0.5s, color 0.5s;
+        }
+
+        /* Top Navigation Bar */
+        .top-bar {
+            width: 100%;
+            max-width: 800px;
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+            flex-wrap: wrap; 
+            gap: 10px;
+            padding: 15px 20px;
+            box-sizing: border-box;
+            background: rgba(0, 0, 0, 0.3);
+            border-bottom: 2px solid var(--ui-accent);
+            margin-bottom: 20px;
+            transition: all 0.3s;
+        }
+
+        body[data-theme="retro"] .top-bar {
+            background: #8bac0f;
+            border-bottom: 4px solid #112211;
+        }
+
+        .top-bar h1 {
+            margin: 0;
+            font-size: 24px;
+            color: var(--ui-accent);
+            text-shadow: 0 0 10px rgba(0,0,0,0.5);
+        }
+
+        .controls-wrapper {
+            display: flex;
+            gap: 15px;
+            align-items: center;
+        }
+
+        select {
+            background-color: var(--menu-bg);
+            color: var(--ui-accent);
+            border: 2px solid var(--ui-accent);
+            padding: 8px 12px;
+            font-size: 14px;
+            font-family: var(--font-family);
+            border-radius: 5px;
+            outline: none;
+            cursor: pointer;
+        }
+
+        /* Game Container */
+        .game-wrapper {
+            width: 100%;
+            flex-grow: 1; 
+            padding: 0 20px 20px 20px;
+            box-sizing: border-box;
+            display: flex;
+            flex-direction: column;
+            align-items: center;
+            justify-content: flex-start;
+        }
+
+        .game-container {
+            position: relative;
+            width: min(100%, calc(75vh * 4 / 3)); 
+            aspect-ratio: 4 / 3; 
+        }
+
+        canvas {
+            border: var(--border-style);
+            box-shadow: var(--canvas-shadow);
+            border-radius: 8px;
+            display: block;
+            width: 100%;
+            height: 100%;
+        }
+        
+        body[data-theme="retro"] canvas { border-radius: 0; }
+
+        /* Score & Hunger Display */
+        .score-board {
+            width: min(100%, calc(75vh * 4 / 3)); 
+            display: flex;
+            justify-content: center;
+            gap: 80px;
+            margin-bottom: 15px;
+            text-shadow: 1px 1px 2px #000;
+        }
+
+        .player-hud {
+            display: flex;
+            flex-direction: column;
+            align-items: center;
+            gap: 5px;
+        }
+
+        .score-text {
+            font-size: clamp(20px, 3vw, 36px); 
+        }
+
+        .hunger-track {
+            width: 100%;
+            height: 6px;
+            background: rgba(255, 0, 0, 0.2);
+            border: 1px solid var(--ui-accent);
+            border-radius: 3px;
+            overflow: hidden;
+            display: none; 
+        }
+
+        .hunger-fill {
+            height: 100%;
+            width: 100%;
+            background: #ff0000;
+            transition: width 0.1s linear;
+        }
+
+        #hud1 .score-text { color: var(--ui-accent); }
+        #hud2 .score-text { color: #ff00ff; }
+        #hud2 { display: none; }
+        
+        body[data-theme="retro"] .score-text { color: #112211 !important; text-shadow: none; }
+        body[data-theme="retro"] .hunger-track { border-color: #112211; border-radius: 0; }
+
+        /* Overlays (Menu & Game Over) */
+        .overlay {
+            position: absolute;
+            top: 0;
+            left: 0;
+            width: 100%;
+            height: 100%;
+            background-color: var(--menu-bg);
+            display: flex;
+            flex-direction: column;
+            align-items: center;
+            justify-content: center;
+            border-radius: 8px;
+            backdrop-filter: blur(4px);
+            z-index: 10;
+        }
+        body[data-theme="retro"] .overlay { backdrop-filter: none; border-radius: 0; }
+
+        .overlay h2 {
+            font-size: clamp(28px, 5vw, 54px); 
+            margin-bottom: 20px;
+            text-align: center;
+        }
+
+        .mode-toggle {
+            display: flex;
+            justify-content: center;
+            gap: 10px;
+            margin-bottom: 20px;
+        }
+
+        .mode-btn {
+            background: transparent;
+            border: 2px solid #555;
+            color: #888;
+            padding: clamp(6px, 1vw, 10px) clamp(12px, 2vw, 20px);
+            font-size: clamp(12px, 1.5vw, 18px);
+            font-family: var(--font-family);
+            border-radius: 5px;
+            cursor: pointer;
+            transition: all 0.3s;
+        }
+        body[data-theme="retro"] .mode-btn { border-radius: 0; }
+
+        .mode-btn.active {
+            border-color: var(--ui-accent);
+            color: var(--ui-accent);
+            background: rgba(255,255,255,0.1);
+        }
+
+        /* Schwierigkeitsgrad & Addon Grids */
+        .menu-grids {
+            display: flex;
+            flex-direction: row;
+            gap: 30px;
+            margin-bottom: 10px;
+            width: min(90%, 600px);
+            justify-content: center;
+        }
+
+        .diff-buttons, .addon-buttons {
+            display: flex;
+            flex-direction: column;
+            gap: 10px;
+            flex: 1;
+        }
+
+        .menu-col-title {
+            text-align: center;
+            font-size: 14px;
+            color: var(--ui-accent);
+            opacity: 0.8;
+            margin-bottom: 5px;
+            text-transform: uppercase;
+        }
+
+        button.action-btn {
+            background-color: transparent;
+            border: 2px solid var(--ui-accent);
+            color: var(--ui-accent);
+            padding: clamp(8px, 1.2vw, 12px) clamp(10px, 1.5vw, 15px);
+            font-size: clamp(12px, 1.5vw, 18px); 
+            font-family: var(--font-family);
+            border-radius: 5px;
+            cursor: pointer;
+            transition: all 0.2s;
+            opacity: 0.5;
+        }
+        body[data-theme="retro"] button.action-btn { border-radius: 0; }
+
+        button.action-btn:hover, button.action-btn.selected {
+            background-color: var(--ui-accent);
+            color: var(--bg-color);
+            transform: scale(1.05);
+            opacity: 1;
+        }
+
+        /* Spezielle Addon Button Styles */
+        button.addon-btn {
+            border-style: dashed;
+        }
+        button.addon-btn.active-addon {
+            background-color: rgba(69, 162, 158, 0.2);
+            border-style: solid;
+            opacity: 1;
+            box-shadow: 0 0 10px var(--ui-accent);
+        }
+        button.addon-btn.locked-addon {
+            border-color: #ff0000 !important;
+            color: #ff0000 !important;
+            background-color: rgba(255, 0, 0, 0.2);
+            box-shadow: 0 0 10px #ff0000;
+            opacity: 1;
+            border-style: solid;
+            pointer-events: none;
+        }
+
+        button.btn-nightmare {
+            border-color: #ff0000 !important;
+            color: #ff0000 !important;
+            animation: pulse 1.5s infinite;
+        }
+
+        button.btn-nightmare:hover, button.btn-nightmare.selected {
+            background-color: #ff0000 !important;
+            color: #fff !important;
+        }
+
+        @keyframes pulse {
+            0% { box-shadow: 0 0 0 0 rgba(255, 0, 0, 0.7); }
+            70% { box-shadow: 0 0 0 10px rgba(255, 0, 0, 0); }
+            100% { box-shadow: 0 0 0 0 rgba(255, 0, 0, 0); }
+        }
+
+        #gameOver { display: none; }
+        .legend { margin-top: 10px; font-size: clamp(10px, 1.2vw, 14px); text-align: center; opacity: 0.8; }
+
+    </style>
+</head>
+<body data-theme="cyberpunk">
+
+    <div class="top-bar">
+        <h1>SNAKE ULTIMATE</h1>
+        <div class="controls-wrapper">
+            <label for="themeSelect">STYLE:</label>
+            <select id="themeSelect" onchange="changeTheme(this.value)">
+                <option value="cyberpunk">Neon Cyberpunk</option>
+                <option value="retro">Classic 3310</option>
+                <option value="ocean">Deep Sea</option>
+                <option value="inferno">Inferno Blood</option>
+            </select>
+        </div>
+    </div>
+
+    <div class="game-wrapper">
+        <div class="score-board">
+            <div class="player-hud" id="hud1">
+                <div class="score-text" id="score1">P1: 0</div>
+                <div class="hunger-track" id="ht1"><div class="hunger-fill" id="hf1"></div></div>
+            </div>
+            <div class="player-hud" id="hud2">
+                <div class="score-text" id="score2">P2: 0</div>
+                <div class="hunger-track" id="ht2"><div class="hunger-fill" id="hf2"></div></div>
+            </div>
+        </div>
+
+        <div class="game-container">
+            <canvas id="gameCanvas" width="800" height="600"></canvas>
+
+            <!-- Main Menu -->
+            <div class="overlay" id="mainMenu">
+                <div class="mode-toggle">
+                    <button class="mode-btn active" id="btnSingle" onclick="setMode('single')">1 SPIELER</button>
+                    <button class="mode-btn" id="btnMulti" onclick="setMode('multi')">2 SPIELER</button>
+                </div>
+                
+                <div class="menu-grids">
+                    <!-- Base Speeds -->
+                    <div class="diff-buttons">
+                        <div class="menu-col-title">GESCHWINDIGKEIT</div>
+                        <button class="action-btn" id="btn-easy" onclick="setDifficulty('easy')">LEICHT</button>
+                        <button class="action-btn" id="btn-medium" onclick="setDifficulty('medium')">MITTEL</button>
+                        <button class="action-btn" id="btn-fast" onclick="setDifficulty('fast')">SCHNELL</button>
+                        <button class="action-btn" id="btn-ultra" onclick="setDifficulty('ultra')">ULTRA</button>
+                        <button class="action-btn btn-nightmare" id="btn-nightmare" onclick="setDifficulty('nightmare')">ALBTRAUM</button>
+                    </div>
+                    
+                    <!-- Toggleable Addons -->
+                    <div class="addon-buttons">
+                        <div class="menu-col-title">ADDONS (Toggles)</div>
+                        <button class="action-btn addon-btn" id="btn-addon-obstacles" onclick="toggleAddon('obstacles')">[1] HINDERNISSE</button>
+                        <button class="action-btn addon-btn" id="btn-addon-hunger" onclick="toggleAddon('hunger')">[2] HUNGER</button>
+                        <button class="action-btn addon-btn" id="btn-addon-maiden" onclick="toggleAddon('maiden')">[3] EIS. JUNGFRAU</button>
+                    </div>
+                </div>
+
+                <div class="legend" style="font-weight: bold; color: var(--ui-accent);">
+                    [↑/↓] Tempo | [1,2,3] Addons | [ALT GR] 1/2 Spieler | [+/-] Style<br><br>
+                    [LEERTASTE] = Spiel Starten
+                </div>
+            </div>
+
+            <!-- Game Over -->
+            <div class="overlay" id="gameOver">
+                <h2 id="winnerText" style="color: #ff3333;">GAME OVER</h2>
+                <h3 id="finalScore" style="margin-bottom: 10px;">Score: 0</h3>
+                <p style="margin-bottom: 30px; font-size: 14px; opacity: 0.8; text-align: center;">[LEERTASTE] = Retry<br>[STRG] = Hauptmenü</p>
+                <button class="action-btn" style="opacity:1;" onclick="showMenu()">HAUPTMENÜ</button>
+            </div>
+        </div>
+    </div>
+
+    <script>
+        const canvas = document.getElementById('gameCanvas');
+        const ctx = canvas.getContext('2d');
+        const TILE_SIZE = 20;
+        const COLS = canvas.width / TILE_SIZE;
+        const ROWS = canvas.height / TILE_SIZE;
+
+        let gameState = 'MENU'; 
+        let gameLoop;
+        let isMultiplayer = false;
+        
+        let currentDifficulty = 'medium';
+        const difficultiesList = ['easy', 'medium', 'fast', 'ultra', 'nightmare'];
+        let currentTheme = 'cyberpunk';
+        const themesList = ['cyberpunk', 'retro', 'ocean', 'inferno'];
+
+        // Addon States (User Auswahl vs. Aktives Spiel)
+        let userAddons = { obstacles: false, hunger: false, maiden: false };
+        let activeAddons = { obstacles: false, hunger: false, maiden: false };
+        
+        let p1, p2, food, obstacles, hunter;
+        let frameCount = 0; 
+        let graceTicks = 0; // Neu: Für das Hunger-Delay
+
+        // Eiserne Jungfrau Logik
+        let maidenSpiral = [];
+        let maidenProgress = 0;
+        let maidenTick = 0;
+
+        function generateMaidenSpiral() {
+            maidenSpiral = [];
+            let top = 0, bottom = ROWS - 1, left = 0, right = COLS - 1;
+            while (top <= bottom && left <= right) {
+                for (let i = left; i <= right; i++) maidenSpiral.push({x: i, y: top});
+                top++;
+                for (let i = top; i <= bottom; i++) maidenSpiral.push({x: right, y: i});
+                right--;
+                if (top <= bottom) {
+                    for (let i = right; i >= left; i--) maidenSpiral.push({x: i, y: bottom});
+                    bottom--;
+                }
+                if (left <= right) {
+                    for (let i = bottom; i >= top; i--) maidenSpiral.push({x: left, y: i});
+                    left++;
+                }
+            }
+        }
+
+        function changeTheme(themeName) {
+            currentTheme = themeName;
+            document.body.setAttribute('data-theme', themeName);
+            if (!gameLoop) draw(); 
+        }
+
+        function setMode(mode) {
+            isMultiplayer = (mode === 'multi');
+            document.getElementById('btnSingle').classList.toggle('active', !isMultiplayer);
+            document.getElementById('btnMulti').classList.toggle('active', isMultiplayer);
+            document.getElementById('hud2').style.display = isMultiplayer ? 'flex' : 'none';
+        }
+
+        function setDifficulty(diff) {
+            currentDifficulty = diff;
+            updateMenuSelection();
+        }
+
+        function toggleAddon(addon) {
+            if (currentDifficulty === 'nightmare') return; 
+            userAddons[addon] = !userAddons[addon];
+            updateMenuSelection();
+        }
+
+        function updateMenuSelection() {
+            difficultiesList.forEach(diff => {
+                const btn = document.getElementById('btn-' + diff);
+                if (btn) btn.classList.toggle('selected', diff === currentDifficulty);
+            });
+
+            const isNightmare = (currentDifficulty === 'nightmare');
+            const addonIds = ['obstacles', 'hunger', 'maiden'];
+            
+            addonIds.forEach(id => {
+                const btn = document.getElementById('btn-addon-' + id);
+                btn.classList.remove('active-addon', 'locked-addon');
+                
+                if (isNightmare) {
+                    btn.classList.add('locked-addon'); 
+                } else if (userAddons[id]) {
+                    btn.classList.add('active-addon');
+                }
+            });
+        }
+
+        function initEntities() {
+            p1 = {
+                body: [{x: 10, y: Math.floor(ROWS/2)}],
+                dir: 'RIGHT', inputQueue: [], score: 0, dead: false, hungerTicks: 0, foodEaten: 0
+            };
+            p2 = {
+                body: [{x: COLS - 11, y: Math.floor(ROWS/2)}],
+                dir: 'LEFT', inputQueue: [], score: 0, dead: !isMultiplayer, hungerTicks: 0, foodEaten: 0
+            };
+            obstacles = [];
+            hunter = { active: false, x: 0, y: 0, moveCounter: 0 };
+            
+            generateMaidenSpiral();
+            maidenProgress = 0;
+            maidenTick = 0;
+
+            spawnFood();
+        }
+
+        function spawnFood() {
+            let valid = false;
+            let attempts = 0;
+            let newX, newY;
+            // ANTI-FREEZE-LOGIK: Verhindert Abstürze, falls das Board komplett voll ist.
+            while (!valid && attempts < 1000) {
+                newX = Math.floor(Math.random() * COLS);
+                newY = Math.floor(Math.random() * ROWS);
+                valid = !isOccupied(newX, newY, false); 
+                attempts++;
+            }
+            if (valid) {
+                food = { x: newX, y: newY };
+            } else {
+                food = { x: -999, y: -999 }; // Sicher ins "Nichts" auslagern, wenn alles belegt ist
+            }
+        }
+
+        function spawnObstacle() {
+            let valid = false;
+            let attempts = 0;
+            while (!valid && attempts < 100) {
+                let obs = { x: Math.floor(Math.random() * COLS), y: Math.floor(Math.random() * ROWS) };
+                let distP1 = Math.abs(obs.x - p1.body[0].x) + Math.abs(obs.y - p1.body[0].y);
+                let distP2 = isMultiplayer && !p2.dead ? Math.abs(obs.x - p2.body[0].x) + Math.abs(obs.y - p2.body[0].y) : 10;
+                
+                if (!isOccupied(obs.x, obs.y) && distP1 > 5 && distP2 > 5) {
+                    obstacles.push(obs);
+                    valid = true;
+                }
+                attempts++;
+            }
+        }
+
+        function isOccupied(x, y, checkFood = true) {
+            if (p1 && p1.body.some(s => s.x === x && s.y === y)) return true;
+            if (isMultiplayer && p2 && p2.body.some(s => s.x === x && s.y === y)) return true;
+            if (activeAddons.obstacles && obstacles && obstacles.some(o => o.x === x && o.y === y)) return true;
+            if (checkFood && food && food.x === x && food.y === y) return true;
+            if (activeAddons.maiden) {
+                for(let i=0; i<maidenProgress; i++) {
+                    if (maidenSpiral[i].x === x && maidenSpiral[i].y === y) return true;
+                }
+            }
+            return false;
+        }
+
+        function startGame() {
+            document.getElementById('mainMenu').style.display = 'none';
+            document.getElementById('gameOver').style.display = 'none';
+            gameState = 'PLAYING';
+            
+            if (currentDifficulty === 'nightmare') {
+                activeAddons = { obstacles: true, hunger: true, maiden: true };
+            } else {
+                activeAddons = { ...userAddons };
+            }
+
+            document.getElementById('ht1').style.display = activeAddons.hunger ? 'block' : 'none';
+            document.getElementById('ht2').style.display = activeAddons.hunger ? 'block' : 'none';
+
+            initEntities();
+
+            let speed = 100;
+            switch (currentDifficulty) {
+                case 'easy': speed = 150; break;
+                case 'medium': speed = 100; break;
+                case 'fast': speed = 70; break;
+                case 'ultra': speed = 45; break;
+                case 'nightmare': 
+                    speed = 35; 
+                    hunter.active = true;
+                    hunter.x = Math.floor(COLS / 2);
+                    hunter.y = Math.floor(ROWS / 2);
+                    break;
+            }
+
+            // 1 Sekunde Delay (Schonfrist) für den Hunger berechnen
+            graceTicks = Math.floor(1000 / speed);
+            p1.hungerTicks = -graceTicks;
+            p2.hungerTicks = -graceTicks;
+
+            updateScoreboard();
+            if (gameLoop) clearInterval(gameLoop);
+            gameLoop = setInterval(update, speed);
+        }
+
+        function showMenu() {
+            gameState = 'MENU';
+            document.getElementById('gameOver').style.display = 'none';
+            document.getElementById('mainMenu').style.display = 'flex';
+            updateMenuSelection();
+        }
+
+        function updateScoreboard() {
+            document.getElementById('score1').innerText = `P1: ${p1.score}`;
+            if (isMultiplayer) document.getElementById('score2').innerText = `P2: ${p2.score}`;
+        }
+
+        function updateHungerUI() {
+            if (!activeAddons.hunger) return;
+            const maxHunger = 50; 
+            // Math.min(100, ...) sorgt dafür, dass die Leiste bei negativen Ticks (Grace Period) bei 100% bleibt
+            const pct1 = Math.max(0, Math.min(100, 100 - (p1.hungerTicks / maxHunger) * 100));
+            document.getElementById('hf1').style.width = pct1 + '%';
+            if (isMultiplayer) {
+                const pct2 = Math.max(0, Math.min(100, 100 - (p2.hungerTicks / maxHunger) * 100));
+                document.getElementById('hf2').style.width = pct2 + '%';
+            }
+        }
+
+        function moveSnake(snake) {
+            if (snake.dead) return;
+            
+            if (snake.inputQueue.length > 0) snake.dir = snake.inputQueue.shift();
+
+            const head = { ...snake.body[0] };
+            if (snake.dir === 'RIGHT') head.x++;
+            else if (snake.dir === 'LEFT') head.x--;
+            else if (snake.dir === 'UP') head.y--;
+            else if (snake.dir === 'DOWN') head.y++;
+
+            snake.body.unshift(head);
+
+            let ateFood = false;
+            if (head.x === food.x && head.y === food.y) {
+                snake.score += 10;
+                snake.foodEaten++;
+                ateFood = true;
+                snake.hungerTicks = -graceTicks; // Hunger wird auf die Schonfrist zurückgesetzt
+                
+                spawnFood();
+                
+                // Obstacle Spawn Logik jetzt basierend auf gegessenem Futter statt Score! (Verhindert Double-Spawns bei Hunger-Drop)
+                if (activeAddons.obstacles && snake.foodEaten % 3 === 0) spawnObstacle();
+                if (activeAddons.maiden) maidenProgress = Math.max(0, maidenProgress - 5); 
+                
+                updateScoreboard();
+            } else {
+                snake.body.pop();
+            }
+
+            if (activeAddons.hunger && !ateFood) {
+                snake.hungerTicks++;
+                if (snake.hungerTicks >= 50) {
+                    snake.hungerTicks = 0;
+                    if (snake.body.length > 1) {
+                        snake.body.pop(); 
+                        snake.score = Math.max(0, snake.score - 5); 
+                        updateScoreboard();
+                    } else {
+                        snake.dead = true; 
+                    }
+                }
+            }
+        }
+
+        function checkCollisions() {
+            [p1, p2].forEach(snake => {
+                if (snake.dead) return;
+                const head = snake.body[0];
+                
+                if (head.x < 0 || head.x >= COLS || head.y < 0 || head.y >= ROWS) snake.dead = true;
+                
+                for (let i = 1; i < snake.body.length; i++) {
+                    if (head.x === snake.body[i].x && head.y === snake.body[i].y) snake.dead = true;
+                }
+                
+                if (activeAddons.obstacles && obstacles.some(o => o.x === head.x && o.y === head.y)) snake.dead = true;
+
+                if (activeAddons.maiden) {
+                    for(let i=0; i<maidenProgress; i++) {
+                        if (maidenSpiral[i].x === head.x && maidenSpiral[i].y === head.y) snake.dead = true;
+                    }
+                }
+                
+                if (hunter.active && head.x === hunter.x && head.y === hunter.y) snake.dead = true;
+            });
+
+            if (isMultiplayer && !p1.dead && !p2.dead) {
+                const h1 = p1.body[0];
+                const h2 = p2.body[0];
+                if (h1.x === h2.x && h1.y === h2.y) { p1.dead = true; p2.dead = true; } 
+                else {
+                    if (p2.body.some(seg => seg.x === h1.x && seg.y === h1.y)) p1.dead = true;
+                    if (p1.body.some(seg => seg.x === h2.x && seg.y === h2.y)) p2.dead = true;
+                }
+            }
+        }
+
+        function updateHunterAndMaiden() {
+            if (hunter.active) {
+                hunter.moveCounter++;
+                if (hunter.moveCounter >= 3) {
+                    hunter.moveCounter = 0;
+                    let target = p1.body[0];
+                    if (isMultiplayer && !p2.dead) {
+                        let d1 = p1.dead ? 9999 : Math.abs(p1.body[0].x - hunter.x) + Math.abs(p1.body[0].y - hunter.y);
+                        let d2 = Math.abs(p2.body[0].x - hunter.x) + Math.abs(p2.body[0].y - hunter.y);
+                        if (d2 < d1) target = p2.body[0];
+                    }
+                    if (target) {
+                        if (hunter.x < target.x) hunter.x++;
+                        else if (hunter.x > target.x) hunter.x--;
+                        else if (hunter.y < target.y) hunter.y++;
+                        else if (hunter.y > target.y) hunter.y--;
+                    }
+                }
+            }
+
+            if (activeAddons.maiden) {
+                maidenTick++;
+                if (maidenTick >= 15) { 
+                    maidenTick = 0;
+                    if (maidenProgress < maidenSpiral.length) maidenProgress++;
+                }
+
+                // Hat die Jungfrau das Essen verschluckt? -> Neues Essen spawnen!
+                if (food.x !== -999 && isOccupied(food.x, food.y, false)) spawnFood();
+            }
+        }
+
+        function update() {
+            frameCount++;
+            moveSnake(p1);
+            if (isMultiplayer) moveSnake(p2);
+            
+            updateHunterAndMaiden();
+            checkCollisions();
+            updateHungerUI();
+
+            if ((!isMultiplayer && p1.dead) || (isMultiplayer && p1.dead && p2.dead)) {
+                endGame("GAME OVER", `P1: ${p1.score}`);
+            } else if (isMultiplayer) {
+                if (p1.dead && !p2.dead) endGame("SPIELER 2 GEWINNT!", `P2: ${p2.score}`);
+                if (p2.dead && !p1.dead) endGame("SPIELER 1 GEWINNT!", `P1: ${p1.score}`);
+            }
+            draw();
+        }
+
+        function endGame(titleText, scoreText) {
+            clearInterval(gameLoop);
+            gameLoop = null;
+            gameState = 'GAMEOVER';
+            document.getElementById('winnerText').innerText = titleText;
+            document.getElementById('finalScore').innerText = scoreText;
+            document.getElementById('gameOver').style.display = 'flex';
+        }
+
+        /* -------------------------------------------------------------
+           DRAWING LOGIC
+        -------------------------------------------------------------- */
+        function draw() {
+            ctx.shadowBlur = 0;
+            ctx.clearRect(0, 0, canvas.width, canvas.height);
+
+            if (currentTheme === 'cyberpunk') drawCyberpunk();
+            else if (currentTheme === 'retro') drawRetro();
+            else if (currentTheme === 'ocean') drawOcean();
+            else if (currentTheme === 'inferno') drawInferno();
+        }
+
+        // --- THEME: CYBERPUNK ---
+        function drawCyberpunk() {
+            ctx.fillStyle = '#0a0f14';
+            ctx.fillRect(0, 0, canvas.width, canvas.height);
+            
+            ctx.strokeStyle = 'rgba(0, 243, 255, 0.05)';
+            ctx.lineWidth = 1;
+            ctx.beginPath();
+            for(let x=0; x<canvas.width; x+=TILE_SIZE) { ctx.moveTo(x, 0); ctx.lineTo(x, canvas.height); }
+            for(let y=0; y<canvas.height; y+=TILE_SIZE) { ctx.moveTo(0, y); ctx.lineTo(canvas.width, y); }
+            ctx.stroke();
+
+            if(!gameLoop) return;
+
+            if(activeAddons.maiden) {
+                ctx.fillStyle = getComputedStyle(document.documentElement).getPropertyValue('--maiden-color').trim();
+                ctx.shadowBlur = 10;
+                ctx.shadowColor = ctx.fillStyle;
+                for(let i=0; i<maidenProgress; i++) {
+                    ctx.fillRect(maidenSpiral[i].x*TILE_SIZE+2, maidenSpiral[i].y*TILE_SIZE+2, TILE_SIZE-4, TILE_SIZE-4);
+                }
+            }
+
+            if(food.x !== -999) {
+                ctx.fillStyle = '#ff003c';
+                ctx.shadowBlur = 15;
+                ctx.shadowColor = '#ff003c';
+                ctx.beginPath();
+                ctx.moveTo(food.x*TILE_SIZE + 10, food.y*TILE_SIZE + 2);
+                ctx.lineTo(food.x*TILE_SIZE + 18, food.y*TILE_SIZE + 10);
+                ctx.lineTo(food.x*TILE_SIZE + 10, food.y*TILE_SIZE + 18);
+                ctx.lineTo(food.x*TILE_SIZE + 2, food.y*TILE_SIZE + 10);
+                ctx.fill();
+            }
+
+            if (activeAddons.obstacles) {
+                ctx.shadowBlur = 0;
+                ctx.fillStyle = '#444';
+                ctx.strokeStyle = '#00f3ff';
+                ctx.lineWidth = 2;
+                obstacles.forEach(o => {
+                    ctx.fillRect(o.x*TILE_SIZE+2, o.y*TILE_SIZE+2, TILE_SIZE-4, TILE_SIZE-4);
+                    ctx.strokeRect(o.x*TILE_SIZE+2, o.y*TILE_SIZE+2, TILE_SIZE-4, TILE_SIZE-4);
+                });
+            }
+
+            const drawSnake = (snake, color) => {
+                if(snake.dead) return;
+                ctx.fillStyle = color;
+                ctx.shadowColor = color;
+                snake.body.forEach((seg, i) => {
+                    ctx.shadowBlur = i === 0 ? 15 : 5;
+                    ctx.fillRect(seg.x*TILE_SIZE+1, seg.y*TILE_SIZE+1, TILE_SIZE-2, TILE_SIZE-2);
+                });
+            };
+            drawSnake(p1, '#00f3ff');
+            if(isMultiplayer) drawSnake(p2, '#ff00ff');
+
+            if(hunter.active) {
+                ctx.fillStyle = '#ff0000';
+                ctx.shadowBlur = 20;
+                ctx.shadowColor = '#ff0000';
+                ctx.fillRect(hunter.x*TILE_SIZE+2, hunter.y*TILE_SIZE+2, TILE_SIZE-4, TILE_SIZE-4);
+            }
+        }
+
+        // --- THEME: RETRO 3310 ---
+        function drawRetro() {
+            ctx.fillStyle = '#8bac0f';
+            ctx.fillRect(0, 0, canvas.width, canvas.height);
+            if(!gameLoop) return;
+
+            const pixelColor = '#112211'; 
+
+            if(activeAddons.maiden) {
+                ctx.fillStyle = pixelColor;
+                for(let i=0; i<maidenProgress; i++) {
+                    ctx.fillRect(maidenSpiral[i].x*TILE_SIZE, maidenSpiral[i].y*TILE_SIZE, TILE_SIZE, TILE_SIZE);
+                    ctx.fillStyle = '#8bac0f'; 
+                    ctx.fillRect(maidenSpiral[i].x*TILE_SIZE+2, maidenSpiral[i].y*TILE_SIZE+2, TILE_SIZE-4, TILE_SIZE-4);
+                    ctx.fillStyle = pixelColor;
+                }
+            }
+
+            if (food.x !== -999 && Math.floor(frameCount / 3) % 2 === 0) {
+                ctx.fillStyle = pixelColor;
+                ctx.fillRect(food.x*TILE_SIZE+2, food.y*TILE_SIZE+2, TILE_SIZE-4, TILE_SIZE-4);
+            }
+
+            if (activeAddons.obstacles) {
+                ctx.fillStyle = pixelColor;
+                obstacles.forEach(o => {
+                    ctx.fillRect(o.x*TILE_SIZE, o.y*TILE_SIZE, TILE_SIZE, TILE_SIZE);
+                    ctx.fillStyle = '#8bac0f'; 
+                    ctx.fillRect(o.x*TILE_SIZE+4, o.y*TILE_SIZE+4, TILE_SIZE-8, TILE_SIZE-8);
+                    ctx.fillStyle = pixelColor;
+                });
+            }
+
+            const drawSnake = (snake) => {
+                if(snake.dead) return;
+                ctx.fillStyle = pixelColor;
+                snake.body.forEach(seg => {
+                    ctx.fillRect(seg.x*TILE_SIZE + 1, seg.y*TILE_SIZE + 1, TILE_SIZE - 2, TILE_SIZE - 2);
+                });
+            };
+            drawSnake(p1);
+            if(isMultiplayer) drawSnake(p2);
+
+            if(hunter.active) {
+                ctx.fillStyle = pixelColor;
+                let hx = hunter.x*TILE_SIZE, hy = hunter.y*TILE_SIZE;
+                ctx.fillRect(hx+4, hy+2, 12, 10); 
+                ctx.fillRect(hx+6, hy+12, 8, 4); 
+                ctx.fillStyle = '#8bac0f';
+                ctx.fillRect(hx+6, hy+6, 3, 3); 
+                ctx.fillRect(hx+11, hy+6, 3, 3); 
+            }
+        }
+
+        // --- THEME: OCEAN ---
+        function drawOcean() {
+            let grad = ctx.createLinearGradient(0,0,0,canvas.height);
+            grad.addColorStop(0, '#003366');
+            grad.addColorStop(1, '#00001a');
+            ctx.fillStyle = grad;
+            ctx.fillRect(0, 0, canvas.width, canvas.height);
+            if(!gameLoop) return;
+
+            if(activeAddons.maiden) {
+                ctx.fillStyle = '#000033';
+                for(let i=0; i<maidenProgress; i++) {
+                    ctx.fillRect(maidenSpiral[i].x*TILE_SIZE, maidenSpiral[i].y*TILE_SIZE, TILE_SIZE, TILE_SIZE);
+                }
+            }
+
+            if (food.x !== -999) {
+                ctx.fillStyle = '#ffcc00';
+                ctx.beginPath();
+                ctx.arc(food.x*TILE_SIZE+10, food.y*TILE_SIZE+10, 8, 0, Math.PI*2);
+                ctx.fill();
+            }
+
+            if (activeAddons.obstacles) {
+                ctx.fillStyle = '#002244';
+                obstacles.forEach(o => {
+                    ctx.beginPath();
+                    ctx.arc(o.x*TILE_SIZE+10, o.y*TILE_SIZE+10, 9, 0, Math.PI*2);
+                    ctx.fill();
+                });
+            }
+
+            const drawSnake = (snake, color) => {
+                if(snake.dead) return;
+                ctx.fillStyle = color;
+                snake.body.forEach((seg, i) => {
+                    ctx.beginPath();
+                    let radius = i === 0 ? 10 : 8; 
+                    ctx.arc(seg.x*TILE_SIZE+10, seg.y*TILE_SIZE+10, radius, 0, Math.PI*2);
+                    ctx.fill();
+                });
+            };
+            drawSnake(p1, '#00ffff');
+            if(isMultiplayer) drawSnake(p2, '#ff9900');
+
+            if(hunter.active) {
+                ctx.fillStyle = '#ff0000';
+                ctx.beginPath();
+                ctx.ellipse(hunter.x*TILE_SIZE+10, hunter.y*TILE_SIZE+10, 10, 6, 0, 0, Math.PI*2);
+                ctx.fill();
+            }
+        }
+
+        // --- THEME: INFERNO ---
+        function drawInferno() {
+            ctx.fillStyle = '#1a0000';
+            ctx.fillRect(0, 0, canvas.width, canvas.height);
+            if(!gameLoop) return;
+
+            if(activeAddons.maiden) {
+                ctx.fillStyle = '#4d0000';
+                for(let i=0; i<maidenProgress; i++) {
+                    let mx = maidenSpiral[i].x*TILE_SIZE, my = maidenSpiral[i].y*TILE_SIZE;
+                    ctx.beginPath();
+                    ctx.moveTo(mx, my); ctx.lineTo(mx+20, my); ctx.lineTo(mx+10, my+10);
+                    ctx.fill();
+                    ctx.fillRect(mx, my+10, 20, 10);
+                }
+            }
+
+            if (food.x !== -999) {
+                let pulse = Math.sin(frameCount * 0.2) * 3;
+                ctx.fillStyle = '#ff9900';
+                ctx.shadowBlur = 10 + pulse;
+                ctx.shadowColor = '#ff9900';
+                ctx.beginPath();
+                ctx.arc(food.x*TILE_SIZE+10, food.y*TILE_SIZE+10, 7 + (pulse/2), 0, Math.PI*2);
+                ctx.fill();
+            }
+
+            if (activeAddons.obstacles) {
+                ctx.shadowBlur = 0;
+                ctx.fillStyle = '#4d0000';
+                obstacles.forEach(o => {
+                    let x = o.x*TILE_SIZE, y = o.y*TILE_SIZE;
+                    ctx.beginPath();
+                    ctx.moveTo(x+10, y); ctx.lineTo(x+20, y+20); ctx.lineTo(x, y+20);
+                    ctx.fill();
+                });
+            }
+
+            const drawSnake = (snake, color) => {
+                if(snake.dead) return;
+                ctx.fillStyle = color;
+                ctx.shadowBlur = 5;
+                ctx.shadowColor = color;
+                snake.body.forEach((seg) => {
+                    let x = seg.x*TILE_SIZE, y = seg.y*TILE_SIZE;
+                    ctx.beginPath();
+                    ctx.moveTo(x+10, y); ctx.lineTo(x+20, y+10); 
+                    ctx.lineTo(x+10, y+20); ctx.lineTo(x, y+10);
+                    ctx.fill();
+                });
+            };
+            drawSnake(p1, '#ff3300');
+            if(isMultiplayer) drawSnake(p2, '#ffcc00');
+
+            if(hunter.active) {
+                ctx.fillStyle = '#fff';
+                ctx.shadowBlur = 20;
+                ctx.shadowColor = '#ff0000';
+                ctx.beginPath();
+                ctx.arc(hunter.x*TILE_SIZE+10, hunter.y*TILE_SIZE+10, 9, 0, Math.PI*2);
+                ctx.fill();
+                ctx.fillStyle = '#000'; 
+                ctx.beginPath();
+                ctx.arc(hunter.x*TILE_SIZE+10, hunter.y*TILE_SIZE+10, 3, 0, Math.PI*2);
+                ctx.fill();
+            }
+            ctx.shadowBlur = 0; 
+        }
+
+        // --- STEUERUNG ---
+        document.addEventListener('keydown', (event) => {
+            const key = event.key;
+
+            if(["ArrowUp","ArrowDown","ArrowLeft","ArrowRight"," "].indexOf(key) > -1) {
+                event.preventDefault();
+            }
+
+            if (gameState === 'MENU') {
+                if (key === ' ') {
+                    startGame(); 
+                } else if (key === 'ArrowUp' || key === 'ArrowDown') {
+                    let idx = difficultiesList.indexOf(currentDifficulty);
+                    if (key === 'ArrowDown') idx = (idx + 1) % difficultiesList.length;
+                    if (key === 'ArrowUp') idx = (idx - 1 + difficultiesList.length) % difficultiesList.length;
+                    setDifficulty(difficultiesList[idx]);
+                } else if (key === 'AltGraph' || event.code === 'AltRight') {
+                    setMode(isMultiplayer ? 'single' : 'multi');
+                } else if (key === '+' || key === '-') {
+                    let idx = themesList.indexOf(currentTheme);
+                    if (key === '+') idx = (idx + 1) % themesList.length;
+                    if (key === '-') idx = (idx - 1 + themesList.length) % themesList.length;
+                    document.getElementById('themeSelect').value = themesList[idx]; 
+                    changeTheme(themesList[idx]);
+                } else if (key === '1') {
+                    toggleAddon('obstacles');
+                } else if (key === '2') {
+                    toggleAddon('hunger');
+                } else if (key === '3') {
+                    toggleAddon('maiden');
+                }
+                return;
+            } else if (gameState === 'GAMEOVER') {
+                if (key === ' ') startGame(); 
+                else if (key === 'Control') showMenu();        
+                return;
+            }
+
+            if (gameState !== 'PLAYING') return; 
+
+            // Player 1
+            if (p1 && !p1.dead) {
+                let lastDir = p1.inputQueue.length > 0 ? p1.inputQueue[p1.inputQueue.length - 1] : p1.dir;
+                if (p1.inputQueue.length < 2) {
+                    if (key === 'ArrowUp' && lastDir !== 'DOWN' && lastDir !== 'UP') p1.inputQueue.push('UP');
+                    else if (key === 'ArrowDown' && lastDir !== 'UP' && lastDir !== 'DOWN') p1.inputQueue.push('DOWN');
+                    else if (key === 'ArrowLeft' && lastDir !== 'RIGHT' && lastDir !== 'LEFT') p1.inputQueue.push('LEFT');
+                    else if (key === 'ArrowRight' && lastDir !== 'LEFT' && lastDir !== 'RIGHT') p1.inputQueue.push('RIGHT');
+                }
+            }
+
+            // Player 2
+            if (isMultiplayer && p2 && !p2.dead) {
+                let lastDirP2 = p2.inputQueue.length > 0 ? p2.inputQueue[p2.inputQueue.length - 1] : p2.dir;
+                const k = key.toLowerCase();
+                if (p2.inputQueue.length < 2) {
+                    if (k === 'w' && lastDirP2 !== 'DOWN' && lastDirP2 !== 'UP') p2.inputQueue.push('UP');
+                    else if (k === 's' && lastDirP2 !== 'UP' && lastDirP2 !== 'DOWN') p2.inputQueue.push('DOWN');
+                    else if (k === 'a' && lastDirP2 !== 'RIGHT' && lastDirP2 !== 'LEFT') p2.inputQueue.push('LEFT');
+                    else if (k === 'd' && lastDirP2 !== 'LEFT' && lastDirP2 !== 'RIGHT') p2.inputQueue.push('RIGHT');
+                }
+            }
+        });
+
+        changeTheme('cyberpunk');
+        updateMenuSelection();
+    </script>
+</body>
+</html>
