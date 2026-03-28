@@ -1,135 +1,152 @@
-🐍 Snake Ultimate (v0.1)
+# 🐍 Snake Ultimate (v0.2)
 
 Snake Ultimate ist eine erweiterte Version des klassischen Arcade-Spiels "Snake". Das Projekt wurde vollständig in HTML5, CSS3 und Vanilla JavaScript entwickelt und kommt ohne externe Frameworks aus.
 
-Es bietet neben dem klassischen Einzelspieler-Modus einen lokalen Multiplayer, verschiedene visuelle Themes und anpassbare Spielmechaniken (Addons).
+Es bietet neben dem klassischen Einzelspieler-Modus einen lokalen Multiplayer, verschiedene visuelle Themes und anpassbare Spielmechaniken (Addons) – vollständig optimiert für Desktop, Tablet und Mobile.
 
-📸 Screenshots
+---
 
-![alt text](image.png)
-Das Hauptmenü im "Neon Cyberpunk" Theme.
-![alt text](image-1.png)
-Das "Classic 3310" Theme.
-![alt text](image-2.png)
-Das Hauptmenü im "Deep Sea" Theme.
-![alt text](image-3.png)
-Das Hauptmenü im "Inferno Blood" Theme.
+## 📸 Screenshots
 
-✨ Features
+![Neon Cyberpunk Theme](image.png)
+Das Hauptmenü im „Neon Cyberpunk" Theme.
 
-Responsives Design: Das Spielfeld skaliert dynamisch mit der Fenstergröße und behält dabei das 4:3 Seitenverhältnis bei.
+![Classic 3310 Theme](image1.png)
+Das „Classic 3310" Theme beim Spielen mit Hunger-Addon.
 
-Lokaler Multiplayer: Zwei Spieler können gleichzeitig an einer Tastatur spielen. Bei einer Kollision der Schlangenköpfe kommt es zu einem Unentschieden (Double K.O.).
+![Deep Sea Theme](image2.png)
+Das Hauptmenü im „Deep Sea" Theme mit 2-Spieler-Modus.
 
-4 Visuelle Themes: Ändern nicht nur die Farbpalette, sondern auch die Rendering-Logik der Objekte und die Schriftarten:
+![Inferno Blood Theme](image3.png)
+Das Hauptmenü im „Inferno Blood" Theme mit allen Addons aktiv.
 
-🌐 Neon Cyberpunk: Rasterhintergrund und Neon-Leuchteffekte.
+---
 
-🧱 Classic 3310: Monochromes Grün mit sichtbarem Pixel-Raster.
+## ✨ Features
 
-🌊 Deep Sea: Organische, runde Formen und Tiefsee-Farbverlauf.
+**Responsives Design:** Das Spielfeld skaliert dynamisch für Desktop, Tablet, Hochformat- und Querformat-Smartphones (16:9, 18:9, 9:16) und behält dabei stets das 4:3-Seitenverhältnis bei.
 
-🔥 Inferno Blood: Dunkelrote Farbgebung mit gezackten Schlangenmodellen.
+**Lokaler Multiplayer:** Zwei Spieler können gleichzeitig an einer Tastatur spielen. Bei einer Kollision der Schlangenköpfe kommt es zu einem Unentschieden (Double K.O.).
 
-Tastaturbedienung: Das gesamte Spiel inklusive Menü lässt sich über die Tastatur steuern.
+**5 Visuelle Themes:** Ändern nicht nur die Farbpalette, sondern auch die Rendering-Logik der Objekte und die Schriftarten:
 
-⚙️ Spielmodi & Addons
+- 🌐 **Neon Cyberpunk:** Rasterhintergrund und Neon-Leuchteffekte.
+- 🧱 **Classic 3310:** Monochromes Grün mit sichtbarem Pixel-Raster.
+- 🌊 **Deep Sea:** Organische, runde Formen und Tiefsee-Farbverlauf.
+- 🔥 **Inferno Blood:** Dunkelrote Farbgebung mit gezackten Schlangenmodellen.
+- 🌿 **Plants vs. Zombies:** Grüner Rasen, Sonnenblumen-Food, Zombie-Hindernisse.
+
+**Tastaturbedienung:** Das gesamte Spiel inklusive Menü lässt sich über die Tastatur steuern.
+
+**Touch-Steuerung:** Swipe-Gesten auf dem Spielfeld und On-Screen D-Pad für komfortable mobile Bedienung.
+
+---
+
+## ⚙️ Spielmodi & Addons
 
 Die Spielgeschwindigkeit und zusätzliche Mechaniken lassen sich modular anpassen.
 
-Geschwindigkeiten
+### Geschwindigkeiten
 
-Leicht (150ms)
+| Modus     | Intervall |
+|-----------|-----------|
+| Leicht    | 150 ms    |
+| Mittel    | 100 ms    |
+| Schnell   |  70 ms    |
+| Ultra     |  45 ms    |
+| ALBTRAUM  |  35 ms    |
 
-Mittel (100ms)
+**ALBTRAUM:** Alle Addons zwingend aktiv + roter Geist verfolgt die Schlange.
 
-Schnell (70ms)
+### Addons (Toggles)
 
-Ultra (45ms)
+| Addon           | Beschreibung |
+|-----------------|--------------|
+| 🪨 Hindernisse  | Für jedes 3. gesammelte Futter spawnt ein permanentes Hindernis. |
+| 🥩 Hunger       | Leiste leert sich kontinuierlich. Bei 0: Schlange schrumpft und Punktabzug. Fressen füllt sie wieder. |
+| 🌀 Eis. Jungfrau | Wand wächst spiralförmig von außen nach innen. Fressen drückt sie zurück. |
 
-ALBTRAUM (35ms): In diesem Modus sind alle untenstehenden Addons zwingend aktiviert. Zusätzlich wird der Spieler von einem roten Geist verfolgt.
+---
 
-Addons (Toggles)
+## 🎮 Steuerung
 
-Die Addons können einzeln zu jedem Standard-Schwierigkeitsgrad hinzugeschaltet werden:
+### Menüsteuerung
 
-🪨 Hindernisse: Für jedes dritte gesammelte Futter spawnt ein permanentes Hindernis auf dem Spielfeld.
+| Taste              | Aktion                             |
+|--------------------|------------------------------------|
+| `Leertaste`        | Spiel starten                      |
+| `↑` / `↓`          | Geschwindigkeit wechseln           |
+| `Alt Gr`           | 1- / 2-Spieler-Modus umschalten    |
+| `+` / `-`          | Visuelles Theme wechseln           |
+| `1`, `2`, `3`      | Addons ein- / ausschalten          |
+| `Strg`             | Zurück ins Hauptmenü               |
 
-🥩 Hunger: Eine Leiste leert sich kontinuierlich. Ist sie leer, schrumpft die Schlange und es gibt Punktabzug. Fressen füllt die Leiste wieder auf.
+### Spielsteuerung (Keyboard)
 
-🌀 Eiserne Jungfrau: Eine Wand wächst spiralförmig von außen nach innen und verkleinert den Spielbereich. Jedes gesammelte Futter drängt die Wand ein Stück zurück.
+| Spieler   | Tasten                              |
+|-----------|-------------------------------------|
+| Spieler 1 | `↑` `↓` `←` `→` (Pfeiltasten)      |
+| Spieler 2 | `W` `A` `S` `D`                     |
 
-🎮 Steuerung
+### Mobile Steuerung
 
-Das Spiel verwendet eine Input-Queue (Tasten-Warteschlange), um Eingabefehler wie sofortige U-Turns bei schnellen Tastenfolgen zu verhindern.
+| Methode   | Beschreibung                                      |
+|-----------|---------------------------------------------------|
+| Swipe     | Wischen auf dem Spielfeld (min. 25 px Distanz)    |
+| D-Pad     | On-Screen Steuerkreuz erscheint automatisch beim Spielstart |
 
-Menüsteuerung
+---
 
-Taste
+## 🚀 Installation & Start
 
-Aktion
+Das Spiel läuft vollständig clientseitig im Browser, es wird kein lokaler Server benötigt.
 
-<kbd>Leer</kbd>
+```bash
+# Repository klonen
+git clone https://github.com/DaWasteh/snake-ultimate.git
 
-Spiel starten / Neustart nach Game Over
+# Datei im Browser öffnen
+open snake_ultimate.html
+```
 
-<kbd>↑</kbd> / <kbd>↓</kbd>
+Kompatibel mit allen modernen Browsern: Chrome, Firefox, Edge, Safari (Desktop & Mobile).
 
-Geschwindigkeit wechseln
+---
 
-<kbd>Alt Gr</kbd>
+## 🛠️ Entwicklung & Architektur
 
-Zwischen 1- und 2-Spieler-Modus umschalten
+### v0.2 – Bugfixes & Mobile Overhaul
 
-<kbd>+</kbd> / <kbd>-</kbd>
+**Bugfixes:**
+- 🐛 **[KRITISCH]** `showMenu()` fügte bei jedem Aufruf neue Event-Listener auf den Start-Button → `startGame()` wurde doppelt oder mehrfach aufgerufen → Spiel startete nicht korrekt auf Mobile.
+- 🐛 **[KRITISCH]** Overlay war `position: absolute` innerhalb des 4:3-Game-Containers → auf Landscape-Phones (16:9, 18:9) nur ~250px hoch → Menü war abgeschnitten und nicht scrollbar.
+- 🐛 Swipe-Erkennung fehlte Mindestabstand-Check → jede 1px-Bewegung registrierte Richtungswechsel.
+- 🐛 `resizeCanvas()` setzte `canvas.style.width/height` per JavaScript, während CSS gleichzeitig `width: 100%` setzte → Größenkonflikt auf Mobile.
+- 🐛 Doppelter `@media (max-width: 600px)` Block (140 Zeilen redundantes CSS).
+- 🐛 PvZ-Theme war im Code implementiert aber nicht im Style-Dropdown auswählbar.
 
-Visuelles Theme wechseln
+**Mobile Improvements:**
+- ✅ Overlay wird auf Touch-Geräten zu `position: fixed; inset: 0` → immer vollbildschirmfüllend und scrollbar.
+- ✅ Separate CSS-Breakpoints für Portrait (≤600px) und Landscape (max-height: 500px).
+- ✅ `touch-action: manipulation` auf allen Buttons → eliminiert 300ms Tap-Delay.
+- ✅ On-Screen D-Pad erscheint automatisch auf Touch-Geräten während des Spiels.
+- ✅ In Landscape wird das D-Pad fest rechts unten positioniert (bleibt neben dem Canvas).
+- ✅ Game-Over-Screen hat jetzt zwei klare Buttons: „↺ NOCHMAL" und „☰ HAUPTMENÜ".
+- ✅ Keyboard-Hints werden auf Touch-Geräten ausgeblendet.
+- ✅ `viewport-fit=cover` + `user-scalable=no` für Notch-Geräte und sauberere Darstellung.
 
-<kbd>1</kbd>, <kbd>2</kbd>, <kbd>3</kbd>
+### v0.1 – Initiale Version
 
-Addons ein- oder ausschalten
+Bei der Entwicklung wurde auf eine klare Trennung der Rendering-Logik geachtet. Jedes Theme nutzt eine eigene Draw-Funktion, um individuelle Formen (Quadrate, Kreise, Diamanten) performant auf das Canvas zu zeichnen. Zudem ist eine State-Machine implementiert, die den Wechsel zwischen Menü, aktivem Spiel und Game-Over-Status verwaltet. Die Input-Queue verhindert sofortige U-Turns bei schnellen Tastenfolgen.
 
-<kbd>Strg</kbd>
+---
 
-Zurück ins Hauptmenü
+## 📋 Geplante Erweiterungen
 
-Spielsteuerung
+- [ ] Highscore-Speicherung (Local Storage)
+- [ ] Soundeffekte
+- [ ] Multiplayer-D-Pad auf Mobile (getrennte Zonen für P1/P2)
 
-Spieler
+---
 
-Tasten
-
-Spieler 1
-
-<kbd>↑</kbd> <kbd>↓</kbd> <kbd>←</kbd> <kbd>→</kbd> (Pfeiltasten)
-
-Spieler 2
-
-<kbd>W</kbd> <kbd>A</kbd> <kbd>S</kbd> <kbd>D</kbd>
-
-🚀 Installation & Start
-
-Das Spiel läuft clientseitig im Browser, es wird kein lokaler Server benötigt.
-
-Repository klonen oder herunterladen:
-
-git clone [https://github.com/DaWasteh/snake-ultimate.git](https://github.com/DaWasteh/snake-ultimate.git)
-
-
-Die Datei index.html in einem modernen Webbrowser (Chrome, Firefox, Edge, Safari) öffnen.
-
-Spiel starten.
-
-🛠️ Entwicklung & Architektur (v0.1)
-
-Bei der Entwicklung wurde auf eine klare Trennung der Rendering-Logik geachtet. Jedes Theme nutzt eine eigene Draw-Funktion, um individuelle Formen (Quadrate, Kreise, Diamanten) performant auf das Canvas zu zeichnen. Zudem ist eine State-Machine implementiert, die den Wechsel zwischen Menü, aktivem Spiel und Game-Over-Status verwaltet.
-
-Geplante Erweiterungen:
-
-[ ] Highscore-Speicherung (Local Storage)
-
-[ ] Soundeffekte
-
-[ ] Mobile Touch-Unterstützung
-
-Entwickelt von DaWasteh.
+Entwickelt von **DaWasteh**.
