@@ -11,13 +11,13 @@ Es bietet neben dem klassischen Einzelspieler-Modus einen lokalen Multiplayer, v
 ![Neon Cyberpunk Theme](image.png)
 Das Hauptmenü im „Neon Cyberpunk" Theme.
 
-![Classic 3310 Theme](image1.png)
+![Classic 3310 Theme](image-1.png)
 Das „Classic 3310" Theme beim Spielen mit Hunger-Addon.
 
-![Deep Sea Theme](image2.png)
+![Deep Sea Theme](image-2.png)
 Das Hauptmenü im „Deep Sea" Theme mit 2-Spieler-Modus.
 
-![Inferno Blood Theme](image3.png)
+![Inferno Blood Theme](image-3.png)
 Das Hauptmenü im „Inferno Blood" Theme mit allen Addons aktiv.
 
 ---
