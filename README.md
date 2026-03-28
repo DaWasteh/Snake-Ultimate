@@ -1,4 +1,4 @@
-# 🐍 Snake Ultimate (v0.2)
+# 🐍 Snake Ultimate (v0.3)
 
 Snake Ultimate ist eine erweiterte Version des klassischen Arcade-Spiels "Snake". Das Projekt wurde vollständig in HTML5, CSS3 und Vanilla JavaScript entwickelt und kommt ohne externe Frameworks aus.
 
@@ -14,12 +14,7 @@ Das Hauptmenü im „Neon Cyberpunk" Theme.
 ![Classic 3310 Theme](image-1.png)
 Das „Classic 3310" Theme beim Spielen mit Hunger-Addon.
 
-![Deep Sea Theme](image-2.png)
-Das Hauptmenü im „Deep Sea" Theme mit 2-Spieler-Modus.
-
-![Inferno Blood Theme](image-3.png)
-Das Hauptmenü im „Inferno Blood" Theme mit allen Addons aktiv.
-
+Und noch 6 weitere Styles!
 ---
 
 ## ✨ Features
@@ -28,13 +23,11 @@ Das Hauptmenü im „Inferno Blood" Theme mit allen Addons aktiv.
 
 **Lokaler Multiplayer:** Zwei Spieler können gleichzeitig an einer Tastatur spielen. Bei einer Kollision der Schlangenköpfe kommt es zu einem Unentschieden (Double K.O.).
 
-**5 Visuelle Themes:** Ändern nicht nur die Farbpalette, sondern auch die Rendering-Logik der Objekte und die Schriftarten:
+**8 Visuelle Themes:** Ändern nicht nur die Farbpalette, sondern auch die Rendering-Logik der Objekte und die Schriftarten.
 
-- 🌐 **Neon Cyberpunk:** Rasterhintergrund und Neon-Leuchteffekte.
-- 🧱 **Classic 3310:** Monochromes Grün mit sichtbarem Pixel-Raster.
-- 🌊 **Deep Sea:** Organische, runde Formen und Tiefsee-Farbverlauf.
-- 🔥 **Inferno Blood:** Dunkelrote Farbgebung mit gezackten Schlangenmodellen.
-- 🌿 **Plants vs. Zombies:** Grüner Rasen, Sonnenblumen-Food, Zombie-Hindernisse.
+**Highscore-Speicherung:** Der persönliche Rekord wird lokal im Browser gespeichert und bleibt auch nach einem Neuladen der Seite erhalten.
+
+**Multiplayer D-Pad:** Auf Touch-Geräten erscheinen im 2-Spieler-Modus zwei separate D-Pads nebeneinander – P1 links, P2 rechts.
 
 **Tastaturbedienung:** Das gesamte Spiel inklusive Menü lässt sich über die Tastatur steuern.
 
@@ -42,29 +35,85 @@ Das Hauptmenü im „Inferno Blood" Theme mit allen Addons aktiv.
 
 ---
 
-## ⚙️ Spielmodi & Addons
+## 🎨 Visuelle Themes
 
-Die Spielgeschwindigkeit und zusätzliche Mechaniken lassen sich modular anpassen.
+### Bestehende Themes (v0.1 / v0.2)
+
+| Theme | Beschreibung |
+|-------|--------------|
+| 🌐 **Neon Cyberpunk** | Rasterhintergrund, Neon-Leuchteffekte, cyan/magenta Farbgebung. |
+| 🧱 **Classic 3310** | Monochromes Grün mit sichtbarem Pixel-Raster (Nokia-Feel). |
+| 🌊 **Deep Sea** | Organische, runde Formen mit Tiefsee-Farbverlauf. |
+| 🔥 **Inferno Blood** | Dunkelrote Farbgebung mit gezackten Diamanten-Schlangenmodellen. |
+| 🌿 **Plants vs. Zombies** | Grüner Rasen, Sonnenblumen-Food, Zombie-Hindernisse. |
+
+### Neue Themes (v0.3)
+
+| Theme | Beschreibung |
+|-------|--------------|
+| 💻 **Matrix Code** | Reines Schwarz mit grünen Scan-Lines und Raster. Die Schlange besteht aus leuchtend grünen Blöcken mit `>` Zeichen. Futter erscheint als weißes Pixel mit `1`. Gift-Äpfel blinken rot als `0`. Der Jäger flackert bedrohlich. |
+| 🌸 **Vaporwave** | Retro-80s-Ästhetik: violetter Himmel mit Farbverlauf, klassisches Perspektiv-Grid auf dem Boden. Die Schlange besteht aus pink/lila Kreisen, Futter als rotierender Strahlen-Burst. |
+| 🌲 **Dark Forest** | Organischer dunkler Wald: prozedural erzeugte Büsche als Hintergrundtextur. Futter sind rote Beeren mit Glanzlicht und Stiel. Hindernisse sind Baumstümpfe mit Jahresringen. Der Jäger ist nur durch zwei glühende rote Augen in der Dunkelheit zu erkennen. |
+
+---
+
+## ⚙️ Spielmodi & Addons
 
 ### Geschwindigkeiten
 
-| Modus     | Intervall |
-|-----------|-----------|
-| Leicht    | 150 ms    |
-| Mittel    | 100 ms    |
-| Schnell   |  70 ms    |
-| Ultra     |  45 ms    |
-| ALBTRAUM  |  35 ms    |
+| Modus    | Intervall |
+|----------|-----------|
+| Leicht   | 150 ms    |
+| Mittel   | 100 ms    |
+| Schnell  |  70 ms    |
+| Ultra    |  45 ms    |
+| ALBTRAUM |  35 ms    |
 
-**ALBTRAUM:** Alle Addons zwingend aktiv + roter Geist verfolgt die Schlange.
+**ALBTRAUM:** Alle Addons zwingend aktiv + roter Jäger verfolgt die Schlange.
 
 ### Addons (Toggles)
 
-| Addon           | Beschreibung |
-|-----------------|--------------|
-| 🪨 Hindernisse  | Für jedes 3. gesammelte Futter spawnt ein permanentes Hindernis. |
-| 🥩 Hunger       | Leiste leert sich kontinuierlich. Bei 0: Schlange schrumpft und Punktabzug. Fressen füllt sie wieder. |
-| 🌀 Eis. Jungfrau | Wand wächst spiralförmig von außen nach innen. Fressen drückt sie zurück. |
+| Taste | Addon | Beschreibung |
+|-------|-------|--------------|
+| `[1]` | 🪨 **Hindernisse** | Für jedes 3. gesammelte Futter spawnt ein permanentes Hindernis. |
+| `[2]` | 🥩 **Hunger** | Leiste leert sich kontinuierlich. Bei 0: Schlange schrumpft und Punktabzug. Fressen füllt sie wieder. |
+| `[3]` | 🌀 **Eis. Jungfrau** | Wand wächst spiralförmig von außen nach innen. Fressen drückt sie zurück. |
+| `[4]` | ☠️ **Gift-Äpfel** *(neu v0.3)* | Siehe unten. |
+
+### ☠️ Gift-Äpfel (neu in v0.3)
+
+Taucht regelmäßig ein giftiger Apfel neben dem normalen Futter auf. Er ist theme-spezifisch dargestellt (lila Diamant, glitchender Block, Pilz, etc.) und verschwindet nach ca. 8 Sekunden von selbst, wenn er nicht gefressen wird.
+
+**Wird er versehentlich gefressen:**
+- Die Schlange schrumpft sofort um 3 Segmente
+- `-15 Punkte` werden abgezogen
+- Der Gift-Apfel verschwindet
+
+Der Modus erfordert, dass man nicht blind allem Leuchtenden hinterherjagt – Situationsbewusstsein ist gefragt.
+
+---
+
+## 🏆 Highscore-System (neu in v0.3)
+
+Der persönliche Rekord wird automatisch im Local Storage des Browsers gespeichert.
+
+- Der aktuelle Bestwert ist jederzeit in der Top-Leiste sichtbar (`🏆 BEST: X`).
+- Nach jedem Spiel wird auf dem Game-Over-Screen angezeigt, ob ein neuer Rekord erzielt wurde.
+- Bei einem neuen Rekord blinkt das Banner auf dem Game-Over-Screen.
+- Der Highscore bleibt über Browser-Sessions hinweg erhalten.
+
+---
+
+## 📱 Multiplayer D-Pad (neu in v0.3)
+
+Auf Touch-Geräten (Smartphones, Tablets) erscheinen im 2-Spieler-Modus automatisch zwei separate D-Pads unterhalb des Spielfelds:
+
+- **Linkes D-Pad (P1):** Steuerung für Spieler 1, farblich in der Akzentfarbe des Themes.
+- **Rechtes D-Pad (P2):** Steuerung für Spieler 2, farblich in Magenta gehalten.
+
+Im Einzelspieler-Modus erscheint weiterhin nur ein zentriertes D-Pad.
+
+Im Querformat-Modus (Landscape) wird das D-Pad fix am unteren Rand positioniert, damit es das Spielfeld nicht verdeckt.
 
 ---
 
@@ -72,14 +121,14 @@ Die Spielgeschwindigkeit und zusätzliche Mechaniken lassen sich modular anpasse
 
 ### Menüsteuerung
 
-| Taste              | Aktion                             |
-|--------------------|------------------------------------|
-| `Leertaste`        | Spiel starten                      |
-| `↑` / `↓`          | Geschwindigkeit wechseln           |
-| `Alt Gr`           | 1- / 2-Spieler-Modus umschalten    |
-| `+` / `-`          | Visuelles Theme wechseln           |
-| `1`, `2`, `3`      | Addons ein- / ausschalten          |
-| `Strg`             | Zurück ins Hauptmenü               |
+| Taste         | Aktion                             |
+|---------------|------------------------------------|
+| `Leertaste`   | Spiel starten                      |
+| `↑` / `↓`     | Geschwindigkeit wechseln           |
+| `Alt Gr`      | 1- / 2-Spieler-Modus umschalten    |
+| `+` / `-`     | Visuelles Theme wechseln           |
+| `1`, `2`, `3`, `4` | Addons ein- / ausschalten     |
+| `Strg`        | Zurück ins Hauptmenü               |
 
 ### Spielsteuerung (Keyboard)
 
@@ -90,10 +139,10 @@ Die Spielgeschwindigkeit und zusätzliche Mechaniken lassen sich modular anpasse
 
 ### Mobile Steuerung
 
-| Methode   | Beschreibung                                      |
-|-----------|---------------------------------------------------|
-| Swipe     | Wischen auf dem Spielfeld (min. 25 px Distanz)    |
-| D-Pad     | On-Screen Steuerkreuz erscheint automatisch beim Spielstart |
+| Methode  | Beschreibung                                      |
+|----------|---------------------------------------------------|
+| Swipe    | Wischen auf dem Spielfeld (min. 25 px Distanz)    |
+| D-Pad    | On-Screen Steuerkreuz erscheint automatisch beim Spielstart; im 2-Spieler-Modus zwei separate Pads |
 
 ---
 
@@ -115,37 +164,44 @@ Kompatibel mit allen modernen Browsern: Chrome, Firefox, Edge, Safari (Desktop &
 
 ## 🛠️ Entwicklung & Architektur
 
+### v0.3 – Highscore, Multiplayer D-Pad, neue Themes & Gift-Äpfel
+
+**Neue Features:**
+- ✅ **Highscore (Local Storage):** Persistente Speicherung des Bestwerts (`snakeUltimate_hs`). Anzeige in Top-Bar und Game-Over-Screen. Blink-Animation bei neuem Rekord.
+- ✅ **Multiplayer D-Pad:** Zwei separate D-Pads (`dpad-p1-zone`, `dpad-p2-zone`) mit eigenem Input-Routing über `pushInput(snake, dir)`. Automatisch sichtbar auf Touch-Geräten nur während des Spiels.
+- ✅ **3 neue Themes:** Matrix Code, Vaporwave, Dark Forest – jedes mit eigener `draw*()` Funktion und CSS-Theme-Block.
+- ✅ **Gift-Äpfel Addon:** Separates `poisonFood`-Objekt mit eigenem Lebenszyklus (`ticksLeft`). Spawn per probabilistischem Intervall (`POISON_SPAWN_DIV`). Theme-spezifische Darstellung via `drawPoisonFoodGeneric(style)` Helper.
+- ✅ **Input-Refactor:** Zentrale `pushInput(snake, direction)`-Funktion für alle Eingabequellen (Keyboard, D-Pad, Swipe). Verhindert U-Turns und Queue-Overflow einheitlich.
+
+**Technische Details:**
+- Dark Forest Hintergrund verwendet einen deterministischen `forestRng(x, y)` Hash, sodass Busch-Texturen stabil und ohne Flimmern gerendert werden.
+- Vaporwave Perspektiv-Grid nutzt `Math.pow()` für nicht-lineare Linienabstände (realistischere Perspektive).
+- Matrix Schlangen-Segmente werden mit dynamischer Opacity basierend auf der Distanz zum Kopf gerendert (Fade-Out-Effekt).
+
 ### v0.2 – Bugfixes & Mobile Overhaul
 
 **Bugfixes:**
-- 🐛 **[KRITISCH]** `showMenu()` fügte bei jedem Aufruf neue Event-Listener auf den Start-Button → `startGame()` wurde doppelt oder mehrfach aufgerufen → Spiel startete nicht korrekt auf Mobile.
-- 🐛 **[KRITISCH]** Overlay war `position: absolute` innerhalb des 4:3-Game-Containers → auf Landscape-Phones (16:9, 18:9) nur ~250px hoch → Menü war abgeschnitten und nicht scrollbar.
-- 🐛 Swipe-Erkennung fehlte Mindestabstand-Check → jede 1px-Bewegung registrierte Richtungswechsel.
-- 🐛 `resizeCanvas()` setzte `canvas.style.width/height` per JavaScript, während CSS gleichzeitig `width: 100%` setzte → Größenkonflikt auf Mobile.
-- 🐛 Doppelter `@media (max-width: 600px)` Block (140 Zeilen redundantes CSS).
-- 🐛 PvZ-Theme war im Code implementiert aber nicht im Style-Dropdown auswählbar.
+- 🐛 **[KRITISCH]** `showMenu()` fügte bei jedem Aufruf neue Event-Listener auf den Start-Button → `startGame()` wurde doppelt aufgerufen.
+- 🐛 **[KRITISCH]** Overlay war `position: absolute` innerhalb des 4:3-Containers → abgeschnitten auf Landscape-Phones.
+- 🐛 Swipe-Erkennung fehlte Mindestabstand-Check.
+- 🐛 Doppelter `@media (max-width: 600px)` Block (redundantes CSS).
+- 🐛 PvZ-Theme war nicht im Dropdown auswählbar.
 
 **Mobile Improvements:**
-- ✅ Overlay wird auf Touch-Geräten zu `position: fixed; inset: 0` → immer vollbildschirmfüllend und scrollbar.
+- ✅ Overlay wird auf Touch-Geräten `position: fixed; inset: 0`.
 - ✅ Separate CSS-Breakpoints für Portrait (≤600px) und Landscape (max-height: 500px).
-- ✅ `touch-action: manipulation` auf allen Buttons → eliminiert 300ms Tap-Delay.
-- ✅ On-Screen D-Pad erscheint automatisch auf Touch-Geräten während des Spiels.
-- ✅ In Landscape wird das D-Pad fest rechts unten positioniert (bleibt neben dem Canvas).
-- ✅ Game-Over-Screen hat jetzt zwei klare Buttons: „↺ NOCHMAL" und „☰ HAUPTMENÜ".
-- ✅ Keyboard-Hints werden auf Touch-Geräten ausgeblendet.
-- ✅ `viewport-fit=cover` + `user-scalable=no` für Notch-Geräte und sauberere Darstellung.
+- ✅ `touch-action: manipulation` eliminiert 300ms Tap-Delay.
+- ✅ Game-Over-Screen mit zwei klaren Buttons: „↺ NOCHMAL" und „☰ HAUPTMENÜ".
 
 ### v0.1 – Initiale Version
 
-Bei der Entwicklung wurde auf eine klare Trennung der Rendering-Logik geachtet. Jedes Theme nutzt eine eigene Draw-Funktion, um individuelle Formen (Quadrate, Kreise, Diamanten) performant auf das Canvas zu zeichnen. Zudem ist eine State-Machine implementiert, die den Wechsel zwischen Menü, aktivem Spiel und Game-Over-Status verwaltet. Die Input-Queue verhindert sofortige U-Turns bei schnellen Tastenfolgen.
+Klare Trennung der Rendering-Logik: jedes Theme nutzt eine eigene Draw-Funktion. State-Machine für Menü → Spiel → Game-Over. Input-Queue verhindert sofortige U-Turns.
 
 ---
 
-## 📋 Geplante Erweiterungen
+## 📋 Geplante Erweiterungen (v0.4)
 
-- [ ] Highscore-Speicherung (Local Storage)
 - [ ] Soundeffekte
-- [ ] Multiplayer-D-Pad auf Mobile (getrennte Zonen für P1/P2)
 
 ---
 
