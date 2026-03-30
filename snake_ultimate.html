@@ -150,6 +150,7 @@
             color: var(--ui-accent);
             opacity: 0.75;
             white-space: nowrap;
+            flex-shrink: 0;
             display: flex;
             align-items: center;
             gap: 6px;
@@ -219,6 +220,20 @@
         body[data-theme="retro"] .score-text { color: #112211 !important; text-shadow: none; }
         body[data-theme="retro"] .hunger-track { border-color: #112211; border-radius: 0; }
 
+        /* ===== GAME CENTER (NEW v0.3) =====
+           Wraps the canvas container + D-pad together.
+           In portrait: flex-column (D-pad below canvas).
+           In landscape: flex-row (D-pad beside canvas). */
+        .game-center {
+            display: flex;
+            flex-direction: column;
+            align-items: center;
+            width: 100%;
+            flex: 1;
+            min-height: 0;
+            gap: 8px; /* space between canvas and D-pad in portrait */
+        }
+
         /* ===== GAME CONTAINER ===== */
         .game-container {
             position: relative;
@@ -252,6 +267,9 @@
             backdrop-filter: blur(4px);
             z-index: 200;
             gap: 0;
+            /* Safety: scroll if content taller than canvas on tiny windows */
+            overflow-y: auto;
+            -webkit-overflow-scrolling: touch;
         }
         body[data-theme="retro"] .overlay { backdrop-filter: none; border-radius: 0; }
         #gameOver { display: none; }
@@ -402,7 +420,7 @@
         #dpad-wrapper {
             display: none;
             gap: 12px;
-            margin-top: 8px;
+            /* NOTE: no margin-top here — .game-center gap handles spacing */
             user-select: none;
             -webkit-user-select: none;
             flex-shrink: 0;
@@ -484,6 +502,8 @@
             .score-text { font-size: 15px !important; }
             .hunger-track { width: 55px; height: 4px; }
 
+            .game-center { gap: 6px; }
+
             .game-container {
                 width: min(calc(100vw - 16px), calc((100dvh - 290px) * 4 / 3));
             }
@@ -492,8 +512,6 @@
                 position: fixed;
                 inset: 0;
                 border-radius: 0;
-                overflow-y: auto;
-                -webkit-overflow-scrolling: touch;
                 justify-content: flex-start;
                 padding: 14px 12px 20px;
                 gap: 3px;
@@ -537,16 +555,27 @@
             .score-text { font-size: 13px !important; }
             .hunger-track { height: 4px; width: 45px; }
 
+            /* ── KEY FIX: game-center becomes a side-by-side row ── */
+            .game-center {
+                flex-direction: row;
+                align-items: center;
+                justify-content: center;
+                gap: 10px;
+            }
+
+            /* ── KEY FIX: canvas is height-constrained, width auto via aspect-ratio ── */
             .game-container {
-                width: min(calc(100vw - 16px), calc((100dvh - 46px - 32px) * 4 / 3));
+                width: auto;
+                height: 100%;
+                aspect-ratio: 4 / 3;
+                flex-shrink: 1;  /* shrinks gracefully if D-pad needs space */
+                min-width: 0;
             }
 
             .overlay {
                 position: fixed;
                 inset: 0;
                 border-radius: 0;
-                overflow-y: auto;
-                -webkit-overflow-scrolling: touch;
                 justify-content: flex-start;
                 padding: 8px 12px 10px;
                 gap: 3px;
@@ -564,26 +593,43 @@
             .legend { font-size: 8px; margin-top: 4px; }
             #keyboardLegend { display: none; }
 
-            #dpad-wrapper.visible {
-                display: flex;
-                position: fixed;
-                right: 10px;
-                bottom: 10px;
-                z-index: 50;
-                background: rgba(0,0,0,0.3);
-                border-radius: 12px;
-                padding: 4px;
-            }
-            #dpad-wrapper.multiplayer {
-                right: auto;
-                bottom: 8px;
-                left: 50%;
-                transform: translateX(-50%);
-                width: auto;
-                gap: 20px;
-            }
+            /* ── D-pad base size for landscape ── */
             .dpad-btn { width: 44px; height: 44px; font-size: 16px; }
             .dpad-center { width: 44px; height: 44px; }
+
+            /* ── KEY FIX: D-pad is now a static flex item beside the canvas ──
+               NOT position: fixed anymore — no overlap possible. */
+            #dpad-wrapper.visible {
+                display: flex;
+                position: static;          /* ← was: fixed */
+                flex-direction: column;    /* zones stacked vertically */
+                align-items: center;
+                align-self: center;        /* centre vertically inside flex-row */
+                gap: 6px;
+                background: rgba(0, 0, 0, 0.25);
+                border-radius: 10px;
+                padding: 6px;
+                flex-shrink: 0;
+            }
+
+            /* Multiplayer: still column-stacked, but with smaller buttons
+               so two D-pads fit in ~320px landscape height */
+            #dpad-wrapper.multiplayer {
+                flex-direction: column;
+                width: auto;
+                padding: 6px;
+                justify-content: center;
+                gap: 6px;
+            }
+            #dpad-wrapper.multiplayer .dpad-btn {
+                width: 32px;
+                height: 32px;
+                font-size: 12px;
+            }
+            #dpad-wrapper.multiplayer .dpad-center {
+                width: 32px;
+                height: 32px;
+            }
         }
 
         /* ===== RESPONSIVE: TABLET (601–1024px) ===== */
@@ -629,98 +675,107 @@
             </div>
         </div>
 
-        <div class="game-container">
-            <canvas id="gameCanvas" width="800" height="600"></canvas>
+        <!-- ── .game-center: wraps canvas + D-pad together.
+             Portrait → flex-column (D-pad below canvas).
+             Landscape → flex-row (D-pad beside canvas, no overlap). ── -->
+        <div class="game-center">
 
-            <!-- Main Menu -->
-            <div class="overlay" id="mainMenu">
-                <h2>SNAKE ULTIMATE</h2>
+            <div class="game-container">
+                <canvas id="gameCanvas" width="800" height="600"></canvas>
 
-                <div class="mode-toggle">
-                    <button class="mode-btn active" id="btnSingle" onclick="setMode('single')">1 SPIELER</button>
-                    <button class="mode-btn" id="btnMulti" onclick="setMode('multi')">2 SPIELER</button>
+                <!-- Main Menu -->
+                <div class="overlay" id="mainMenu">
+                    <h2>SNAKE ULTIMATE</h2>
+
+                    <div class="mode-toggle">
+                        <button class="mode-btn active" id="btnSingle" onclick="setMode('single')">1 SPIELER</button>
+                        <button class="mode-btn" id="btnMulti" onclick="setMode('multi')">2 SPIELER</button>
+                    </div>
+
+                    <div class="menu-grids">
+                        <div class="diff-buttons">
+                            <div class="menu-col-title">GESCHWINDIGKEIT</div>
+                            <button class="action-btn" id="btn-easy"      onclick="setDifficulty('easy')">LEICHT</button>
+                            <button class="action-btn" id="btn-medium"    onclick="setDifficulty('medium')">MITTEL</button>
+                            <button class="action-btn" id="btn-fast"      onclick="setDifficulty('fast')">SCHNELL</button>
+                            <button class="action-btn" id="btn-ultra"     onclick="setDifficulty('ultra')">ULTRA</button>
+                            <button class="action-btn btn-nightmare" id="btn-nightmare" onclick="setDifficulty('nightmare')">ALBTRAUM</button>
+                        </div>
+                        <div class="addon-buttons">
+                            <div class="menu-col-title">ADDONS (Toggles)</div>
+                            <button class="action-btn addon-btn" id="btn-addon-obstacles" onclick="toggleAddon('obstacles')">[1] HINDERNISSE</button>
+                            <button class="action-btn addon-btn" id="btn-addon-hunger"    onclick="toggleAddon('hunger')">[2] HUNGER</button>
+                            <button class="action-btn addon-btn" id="btn-addon-maiden"    onclick="toggleAddon('maiden')">[3] EIS. JUNGFRAU</button>
+                            <button class="action-btn addon-btn" id="btn-addon-poison"    onclick="toggleAddon('poison')">[4] GIFT-ÄPFEL</button>
+                        </div>
+                    </div>
+
+                    <button class="action-btn" id="startGameBtn" onclick="startGame()">▶ SPIEL STARTEN</button>
+
+                    <p class="legend" id="keyboardLegend">
+                        [↑/↓] Tempo | [1,2,3,4] Addons | [ALT GR] 1/2 Spieler | [+/-] Style<br>
+                        [LEERTASTE] = Spiel Starten
+                    </p>
                 </div>
 
-                <div class="menu-grids">
-                    <div class="diff-buttons">
-                        <div class="menu-col-title">GESCHWINDIGKEIT</div>
-                        <button class="action-btn" id="btn-easy"      onclick="setDifficulty('easy')">LEICHT</button>
-                        <button class="action-btn" id="btn-medium"    onclick="setDifficulty('medium')">MITTEL</button>
-                        <button class="action-btn" id="btn-fast"      onclick="setDifficulty('fast')">SCHNELL</button>
-                        <button class="action-btn" id="btn-ultra"     onclick="setDifficulty('ultra')">ULTRA</button>
-                        <button class="action-btn btn-nightmare" id="btn-nightmare" onclick="setDifficulty('nightmare')">ALBTRAUM</button>
+                <!-- Game Over -->
+                <div class="overlay" id="gameOver">
+                    <h2 id="winnerText" style="color: #ff3333;">GAME OVER</h2>
+                    <h3 id="finalScore" style="margin-bottom: 6px;">Score: 0</h3>
+                    <div class="hs-banner" id="hsBanner">🏆 BEST: 0</div>
+                    <div style="display:flex; gap:12px; flex-wrap:wrap; justify-content:center; margin-top:4px;">
+                        <button class="action-btn" style="opacity:1;" onclick="startGame()">↺ NOCHMAL</button>
+                        <button class="action-btn" style="opacity:1;" onclick="showMenu()">☰ HAUPTMENÜ</button>
                     </div>
-                    <div class="addon-buttons">
-                        <div class="menu-col-title">ADDONS (Toggles)</div>
-                        <button class="action-btn addon-btn" id="btn-addon-obstacles" onclick="toggleAddon('obstacles')">[1] HINDERNISSE</button>
-                        <button class="action-btn addon-btn" id="btn-addon-hunger"    onclick="toggleAddon('hunger')">[2] HUNGER</button>
-                        <button class="action-btn addon-btn" id="btn-addon-maiden"    onclick="toggleAddon('maiden')">[3] EIS. JUNGFRAU</button>
-                        <button class="action-btn addon-btn" id="btn-addon-poison"    onclick="toggleAddon('poison')">[4] GIFT-ÄPFEL</button>
+                    <p class="legend" id="keyboardLegendGO" style="margin-top:12px;">
+                        [LEERTASTE] = Retry | [STRG] = Hauptmenü
+                    </p>
+                </div>
+            </div><!-- end .game-container -->
+
+            <!-- D-Pad Wrapper — now INSIDE .game-center.
+                 Portrait: appears below canvas via flex-column gap.
+                 Landscape: appears beside canvas via flex-row (position: static). -->
+            <div id="dpad-wrapper">
+                <!-- P1 D-pad -->
+                <div class="dpad-zone" id="dpad-p1-zone">
+                    <div class="dpad-player-label" id="dpad-label-p1">P1</div>
+                    <div class="dpad-inner">
+                        <div class="dpad-row">
+                            <button class="dpad-btn" id="dpad1-up">▲</button>
+                        </div>
+                        <div class="dpad-row">
+                            <button class="dpad-btn" id="dpad1-left">◀</button>
+                            <div class="dpad-center"></div>
+                            <button class="dpad-btn" id="dpad1-right">▶</button>
+                        </div>
+                        <div class="dpad-row">
+                            <button class="dpad-btn" id="dpad1-down">▼</button>
+                        </div>
                     </div>
                 </div>
 
-                <button class="action-btn" id="startGameBtn" onclick="startGame()">▶ SPIEL STARTEN</button>
-
-                <p class="legend" id="keyboardLegend">
-                    [↑/↓] Tempo | [1,2,3,4] Addons | [ALT GR] 1/2 Spieler | [+/-] Style<br>
-                    [LEERTASTE] = Spiel Starten
-                </p>
-            </div>
-
-            <!-- Game Over -->
-            <div class="overlay" id="gameOver">
-                <h2 id="winnerText" style="color: #ff3333;">GAME OVER</h2>
-                <h3 id="finalScore" style="margin-bottom: 6px;">Score: 0</h3>
-                <div class="hs-banner" id="hsBanner">🏆 BEST: 0</div>
-                <div style="display:flex; gap:12px; flex-wrap:wrap; justify-content:center; margin-top:4px;">
-                    <button class="action-btn" style="opacity:1;" onclick="startGame()">↺ NOCHMAL</button>
-                    <button class="action-btn" style="opacity:1;" onclick="showMenu()">☰ HAUPTMENÜ</button>
-                </div>
-                <p class="legend" id="keyboardLegendGO" style="margin-top:12px;">
-                    [LEERTASTE] = Retry | [STRG] = Hauptmenü
-                </p>
-            </div>
-        </div>
-
-        <!-- D-Pad Wrapper (Single + Multiplayer) -->
-        <div id="dpad-wrapper">
-            <!-- P1 D-pad -->
-            <div class="dpad-zone" id="dpad-p1-zone">
-                <div class="dpad-player-label" id="dpad-label-p1">P1</div>
-                <div class="dpad-inner">
-                    <div class="dpad-row">
-                        <button class="dpad-btn" id="dpad1-up">▲</button>
-                    </div>
-                    <div class="dpad-row">
-                        <button class="dpad-btn" id="dpad1-left">◀</button>
-                        <div class="dpad-center"></div>
-                        <button class="dpad-btn" id="dpad1-right">▶</button>
-                    </div>
-                    <div class="dpad-row">
-                        <button class="dpad-btn" id="dpad1-down">▼</button>
+                <!-- P2 D-pad (only shown in multiplayer) -->
+                <div class="dpad-zone" id="dpad-p2-zone" style="display:none;">
+                    <div class="dpad-player-label" id="dpad-label-p2">P2</div>
+                    <div class="dpad-inner">
+                        <div class="dpad-row">
+                            <button class="dpad-btn" id="dpad2-up">▲</button>
+                        </div>
+                        <div class="dpad-row">
+                            <button class="dpad-btn" id="dpad2-left">◀</button>
+                            <div class="dpad-center"></div>
+                            <button class="dpad-btn" id="dpad2-right">▶</button>
+                        </div>
+                        <div class="dpad-row">
+                            <button class="dpad-btn" id="dpad2-down">▼</button>
+                        </div>
                     </div>
                 </div>
-            </div>
+            </div><!-- end #dpad-wrapper -->
 
-            <!-- P2 D-pad (only shown in multiplayer) -->
-            <div class="dpad-zone" id="dpad-p2-zone" style="display:none;">
-                <div class="dpad-player-label" id="dpad-label-p2">P2</div>
-                <div class="dpad-inner">
-                    <div class="dpad-row">
-                        <button class="dpad-btn" id="dpad2-up">▲</button>
-                    </div>
-                    <div class="dpad-row">
-                        <button class="dpad-btn" id="dpad2-left">◀</button>
-                        <div class="dpad-center"></div>
-                        <button class="dpad-btn" id="dpad2-right">▶</button>
-                    </div>
-                    <div class="dpad-row">
-                        <button class="dpad-btn" id="dpad2-down">▼</button>
-                    </div>
-                </div>
-            </div>
-        </div>
-    </div>
+        </div><!-- end .game-center -->
+    </div><!-- end .game-wrapper -->
 
     <script>
         const canvas = document.getElementById('gameCanvas');
@@ -1685,7 +1740,6 @@
             const drawSnakeVaporwave = (snake, headColor, bodyColor) => {
                 if (snake.dead) return;
                 snake.body.forEach((seg, i) => {
-                    const color = i === 0 ? headColor : (i % 2 === 0 ? bodyColor : headColor + 'aa');
                     ctx.fillStyle   = i === 0 ? headColor : bodyColor;
                     ctx.globalAlpha = i === 0 ? 1 : (0.4 + 0.5 * (1 - i / snake.body.length));
                     ctx.shadowBlur  = i === 0 ? 14 : 4;
@@ -1824,7 +1878,7 @@
             }
 
             // Snakes: organic rounded segments, earthy colors
-            const drawSnakeForest = (snake, color, scale) => {
+            const drawSnakeForest = (snake, color) => {
                 if (snake.dead) return;
                 for (let i = snake.body.length - 1; i >= 0; i--) {
                     const seg = snake.body[i];
@@ -1905,7 +1959,7 @@
             }
         }
 
-        /* ── D-PAD LISTENERS ───────────────────────────────────────────── */
+        /* ── D-PAD LISTENERS (registered once, statically) ─────────────── */
         [['dpad1-up','UP','p1'], ['dpad1-down','DOWN','p1'], ['dpad1-left','LEFT','p1'], ['dpad1-right','RIGHT','p1'],
          ['dpad2-up','UP','p2'], ['dpad2-down','DOWN','p2'], ['dpad2-left','LEFT','p2'], ['dpad2-right','RIGHT','p2']
         ].forEach(([id, dir, player]) => {
@@ -1961,7 +2015,7 @@
             else if (key === 'ArrowLeft')  pushInput(p1, 'LEFT');
             else if (key === 'ArrowRight') pushInput(p1, 'RIGHT');
 
-            // Player 2 (WASD)
+            // Player 2 (WASD) — keyboard only, independent of P1
             if (isMultiplayer) {
                 const k = key.toLowerCase();
                 if      (k === 'w') pushInput(p2, 'UP');
