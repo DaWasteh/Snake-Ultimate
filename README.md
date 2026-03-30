@@ -8,11 +8,11 @@ Es bietet neben dem klassischen Einzelspieler-Modus einen lokalen Multiplayer, v
 
 ## 📸 Screenshots
 
-![Neon Cyberpunk Theme](image.png)
+![Neon Cyberpunk](image.png)
 Das Hauptmenü im „Neon Cyberpunk" Theme.
 
-![Classic 3310 Theme](image-1.png)
-Das „Classic 3310" Theme beim Spielen mit Hunger-Addon.
+![Classic 3310](image-1.png)
+Das „Classic 3310" Theme beim Spielen mit Addon's.
 
 Und noch 6 weitere Styles!
 
