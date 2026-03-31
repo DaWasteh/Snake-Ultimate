@@ -65,7 +65,6 @@
             --canvas-shadow: 0 0 30px rgba(118, 200, 67, 0.4);
             --maiden-color: #8b4513;
         }
-        /* ── NEW THEMES v0.3 ── */
         body[data-theme="matrix"] {
             --bg-color: #000500;
             --ui-accent: #00ff41;
@@ -144,13 +143,11 @@
             align-items: center;
             flex-wrap: wrap;
         }
-        /* ── Highscore in top bar ── */
         .topbar-hs {
             font-size: clamp(10px, 1.4vw, 14px);
             color: var(--ui-accent);
             opacity: 0.75;
             white-space: nowrap;
-            flex-shrink: 0;
             display: flex;
             align-items: center;
             gap: 6px;
@@ -220,20 +217,6 @@
         body[data-theme="retro"] .score-text { color: #112211 !important; text-shadow: none; }
         body[data-theme="retro"] .hunger-track { border-color: #112211; border-radius: 0; }
 
-        /* ===== GAME CENTER (NEW v0.3) =====
-           Wraps the canvas container + D-pad together.
-           In portrait: flex-column (D-pad below canvas).
-           In landscape: flex-row (D-pad beside canvas). */
-        .game-center {
-            display: flex;
-            flex-direction: column;
-            align-items: center;
-            width: 100%;
-            flex: 1;
-            min-height: 0;
-            gap: 8px; /* space between canvas and D-pad in portrait */
-        }
-
         /* ===== GAME CONTAINER ===== */
         .game-container {
             position: relative;
@@ -267,16 +250,24 @@
             backdrop-filter: blur(4px);
             z-index: 200;
             gap: 0;
-            /* Safety: scroll if content taller than canvas on tiny windows */
-            overflow-y: auto;
-            -webkit-overflow-scrolling: touch;
         }
         body[data-theme="retro"] .overlay { backdrop-filter: none; border-radius: 0; }
-        #gameOver { display: none; }
+        #gameOver  { display: none; }
+        #pauseOverlay { display: none; }
         .overlay h2 {
             font-size: clamp(20px, 4vw, 54px);
             margin: 0 0 12px;
             text-align: center;
+        }
+
+        /* ===== PAUSE OVERLAY ===== */
+        #pauseOverlay {
+            background-color: rgba(0, 0, 0, 0.6);
+            backdrop-filter: blur(6px);
+        }
+        #pauseOverlay h2 {
+            font-size: clamp(22px, 4.5vw, 56px);
+            color: var(--ui-accent);
         }
 
         /* ===== MODE TOGGLE ===== */
@@ -413,14 +404,14 @@
         }
         @keyframes hs-flash {
             0%, 100% { opacity: 1; }
-            50% { opacity: 0.3; }
+            50%       { opacity: 0.3; }
         }
 
         /* ===== D-PAD (Mobile Controls) ===== */
         #dpad-wrapper {
             display: none;
             gap: 12px;
-            /* NOTE: no margin-top here — .game-center gap handles spacing */
+            margin-top: 8px;
             user-select: none;
             -webkit-user-select: none;
             flex-shrink: 0;
@@ -502,8 +493,6 @@
             .score-text { font-size: 15px !important; }
             .hunger-track { width: 55px; height: 4px; }
 
-            .game-center { gap: 6px; }
-
             .game-container {
                 width: min(calc(100vw - 16px), calc((100dvh - 290px) * 4 / 3));
             }
@@ -512,6 +501,8 @@
                 position: fixed;
                 inset: 0;
                 border-radius: 0;
+                overflow-y: auto;
+                -webkit-overflow-scrolling: touch;
                 justify-content: flex-start;
                 padding: 14px 12px 20px;
                 gap: 3px;
@@ -533,6 +524,7 @@
             }
             .legend { font-size: 9px; margin-top: 6px; }
             #keyboardLegend { display: none; }
+            #pauseLegend    { display: none; }
 
             #dpad-wrapper.visible { display: flex; }
             .dpad-btn { width: 60px; height: 60px; font-size: 22px; }
@@ -555,27 +547,16 @@
             .score-text { font-size: 13px !important; }
             .hunger-track { height: 4px; width: 45px; }
 
-            /* ── KEY FIX: game-center becomes a side-by-side row ── */
-            .game-center {
-                flex-direction: row;
-                align-items: center;
-                justify-content: center;
-                gap: 10px;
-            }
-
-            /* ── KEY FIX: canvas is height-constrained, width auto via aspect-ratio ── */
             .game-container {
-                width: auto;
-                height: 100%;
-                aspect-ratio: 4 / 3;
-                flex-shrink: 1;  /* shrinks gracefully if D-pad needs space */
-                min-width: 0;
+                width: min(calc(100vw - 16px), calc((100dvh - 46px - 32px) * 4 / 3));
             }
 
             .overlay {
                 position: fixed;
                 inset: 0;
                 border-radius: 0;
+                overflow-y: auto;
+                -webkit-overflow-scrolling: touch;
                 justify-content: flex-start;
                 padding: 8px 12px 10px;
                 gap: 3px;
@@ -592,44 +573,28 @@
             #startGameBtn { padding: 7px 20px; font-size: 12px; margin-top: 5px; }
             .legend { font-size: 8px; margin-top: 4px; }
             #keyboardLegend { display: none; }
+            #pauseLegend    { display: none; }
 
-            /* ── D-pad base size for landscape ── */
-            .dpad-btn { width: 44px; height: 44px; font-size: 16px; }
-            .dpad-center { width: 44px; height: 44px; }
-
-            /* ── KEY FIX: D-pad is now a static flex item beside the canvas ──
-               NOT position: fixed anymore — no overlap possible. */
             #dpad-wrapper.visible {
                 display: flex;
-                position: static;          /* ← was: fixed */
-                flex-direction: column;    /* zones stacked vertically */
-                align-items: center;
-                align-self: center;        /* centre vertically inside flex-row */
-                gap: 6px;
-                background: rgba(0, 0, 0, 0.25);
-                border-radius: 10px;
-                padding: 6px;
-                flex-shrink: 0;
+                position: fixed;
+                right: 10px;
+                bottom: 10px;
+                z-index: 50;
+                background: rgba(0,0,0,0.3);
+                border-radius: 12px;
+                padding: 4px;
             }
-
-            /* Multiplayer: still column-stacked, but with smaller buttons
-               so two D-pads fit in ~320px landscape height */
             #dpad-wrapper.multiplayer {
-                flex-direction: column;
+                right: auto;
+                bottom: 8px;
+                left: 50%;
+                transform: translateX(-50%);
                 width: auto;
-                padding: 6px;
-                justify-content: center;
-                gap: 6px;
+                gap: 20px;
             }
-            #dpad-wrapper.multiplayer .dpad-btn {
-                width: 32px;
-                height: 32px;
-                font-size: 12px;
-            }
-            #dpad-wrapper.multiplayer .dpad-center {
-                width: 32px;
-                height: 32px;
-            }
+            .dpad-btn { width: 44px; height: 44px; font-size: 16px; }
+            .dpad-center { width: 44px; height: 44px; }
         }
 
         /* ===== RESPONSIVE: TABLET (601–1024px) ===== */
@@ -675,107 +640,107 @@
             </div>
         </div>
 
-        <!-- ── .game-center: wraps canvas + D-pad together.
-             Portrait → flex-column (D-pad below canvas).
-             Landscape → flex-row (D-pad beside canvas, no overlap). ── -->
-        <div class="game-center">
+        <div class="game-container">
+            <canvas id="gameCanvas" width="800" height="600"></canvas>
 
-            <div class="game-container">
-                <canvas id="gameCanvas" width="800" height="600"></canvas>
+            <!-- Main Menu -->
+            <div class="overlay" id="mainMenu">
+                <h2>SNAKE ULTIMATE</h2>
 
-                <!-- Main Menu -->
-                <div class="overlay" id="mainMenu">
-                    <h2>SNAKE ULTIMATE</h2>
-
-                    <div class="mode-toggle">
-                        <button class="mode-btn active" id="btnSingle" onclick="setMode('single')">1 SPIELER</button>
-                        <button class="mode-btn" id="btnMulti" onclick="setMode('multi')">2 SPIELER</button>
-                    </div>
-
-                    <div class="menu-grids">
-                        <div class="diff-buttons">
-                            <div class="menu-col-title">GESCHWINDIGKEIT</div>
-                            <button class="action-btn" id="btn-easy"      onclick="setDifficulty('easy')">LEICHT</button>
-                            <button class="action-btn" id="btn-medium"    onclick="setDifficulty('medium')">MITTEL</button>
-                            <button class="action-btn" id="btn-fast"      onclick="setDifficulty('fast')">SCHNELL</button>
-                            <button class="action-btn" id="btn-ultra"     onclick="setDifficulty('ultra')">ULTRA</button>
-                            <button class="action-btn btn-nightmare" id="btn-nightmare" onclick="setDifficulty('nightmare')">ALBTRAUM</button>
-                        </div>
-                        <div class="addon-buttons">
-                            <div class="menu-col-title">ADDONS (Toggles)</div>
-                            <button class="action-btn addon-btn" id="btn-addon-obstacles" onclick="toggleAddon('obstacles')">[1] HINDERNISSE</button>
-                            <button class="action-btn addon-btn" id="btn-addon-hunger"    onclick="toggleAddon('hunger')">[2] HUNGER</button>
-                            <button class="action-btn addon-btn" id="btn-addon-maiden"    onclick="toggleAddon('maiden')">[3] EIS. JUNGFRAU</button>
-                            <button class="action-btn addon-btn" id="btn-addon-poison"    onclick="toggleAddon('poison')">[4] GIFT-ÄPFEL</button>
-                        </div>
-                    </div>
-
-                    <button class="action-btn" id="startGameBtn" onclick="startGame()">▶ SPIEL STARTEN</button>
-
-                    <p class="legend" id="keyboardLegend">
-                        [↑/↓] Tempo | [1,2,3,4] Addons | [ALT GR] 1/2 Spieler | [+/-] Style<br>
-                        [LEERTASTE] = Spiel Starten
-                    </p>
+                <div class="mode-toggle">
+                    <button class="mode-btn active" id="btnSingle" onclick="setMode('single')">1 SPIELER</button>
+                    <button class="mode-btn" id="btnMulti" onclick="setMode('multi')">2 SPIELER</button>
                 </div>
 
-                <!-- Game Over -->
-                <div class="overlay" id="gameOver">
-                    <h2 id="winnerText" style="color: #ff3333;">GAME OVER</h2>
-                    <h3 id="finalScore" style="margin-bottom: 6px;">Score: 0</h3>
-                    <div class="hs-banner" id="hsBanner">🏆 BEST: 0</div>
-                    <div style="display:flex; gap:12px; flex-wrap:wrap; justify-content:center; margin-top:4px;">
-                        <button class="action-btn" style="opacity:1;" onclick="startGame()">↺ NOCHMAL</button>
-                        <button class="action-btn" style="opacity:1;" onclick="showMenu()">☰ HAUPTMENÜ</button>
+                <div class="menu-grids">
+                    <div class="diff-buttons">
+                        <div class="menu-col-title">GESCHWINDIGKEIT</div>
+                        <button class="action-btn" id="btn-easy"      onclick="setDifficulty('easy')">LEICHT</button>
+                        <button class="action-btn" id="btn-medium"    onclick="setDifficulty('medium')">MITTEL</button>
+                        <button class="action-btn" id="btn-fast"      onclick="setDifficulty('fast')">SCHNELL</button>
+                        <button class="action-btn" id="btn-ultra"     onclick="setDifficulty('ultra')">ULTRA</button>
+                        <button class="action-btn btn-nightmare" id="btn-nightmare" onclick="setDifficulty('nightmare')">ALBTRAUM</button>
                     </div>
-                    <p class="legend" id="keyboardLegendGO" style="margin-top:12px;">
-                        [LEERTASTE] = Retry | [STRG] = Hauptmenü
-                    </p>
-                </div>
-            </div><!-- end .game-container -->
-
-            <!-- D-Pad Wrapper — now INSIDE .game-center.
-                 Portrait: appears below canvas via flex-column gap.
-                 Landscape: appears beside canvas via flex-row (position: static). -->
-            <div id="dpad-wrapper">
-                <!-- P1 D-pad -->
-                <div class="dpad-zone" id="dpad-p1-zone">
-                    <div class="dpad-player-label" id="dpad-label-p1">P1</div>
-                    <div class="dpad-inner">
-                        <div class="dpad-row">
-                            <button class="dpad-btn" id="dpad1-up">▲</button>
-                        </div>
-                        <div class="dpad-row">
-                            <button class="dpad-btn" id="dpad1-left">◀</button>
-                            <div class="dpad-center"></div>
-                            <button class="dpad-btn" id="dpad1-right">▶</button>
-                        </div>
-                        <div class="dpad-row">
-                            <button class="dpad-btn" id="dpad1-down">▼</button>
-                        </div>
+                    <div class="addon-buttons">
+                        <div class="menu-col-title">ADDONS (Toggles)</div>
+                        <button class="action-btn addon-btn" id="btn-addon-obstacles" onclick="toggleAddon('obstacles')">[1] HINDERNISSE</button>
+                        <button class="action-btn addon-btn" id="btn-addon-hunger"    onclick="toggleAddon('hunger')">[2] HUNGER</button>
+                        <button class="action-btn addon-btn" id="btn-addon-maiden"    onclick="toggleAddon('maiden')">[3] EIS. JUNGFRAU</button>
+                        <button class="action-btn addon-btn" id="btn-addon-poison"    onclick="toggleAddon('poison')">[4] GIFT-ÄPFEL</button>
                     </div>
                 </div>
 
-                <!-- P2 D-pad (only shown in multiplayer) -->
-                <div class="dpad-zone" id="dpad-p2-zone" style="display:none;">
-                    <div class="dpad-player-label" id="dpad-label-p2">P2</div>
-                    <div class="dpad-inner">
-                        <div class="dpad-row">
-                            <button class="dpad-btn" id="dpad2-up">▲</button>
-                        </div>
-                        <div class="dpad-row">
-                            <button class="dpad-btn" id="dpad2-left">◀</button>
-                            <div class="dpad-center"></div>
-                            <button class="dpad-btn" id="dpad2-right">▶</button>
-                        </div>
-                        <div class="dpad-row">
-                            <button class="dpad-btn" id="dpad2-down">▼</button>
-                        </div>
+                <button class="action-btn" id="startGameBtn" onclick="startGame()">▶ SPIEL STARTEN</button>
+
+                <p class="legend" id="keyboardLegend">
+                    [↑/↓] Tempo | [1,2,3,4] Addons | [ALT GR] 1/2 Spieler | [+/-] Style<br>
+                    [LEERTASTE] = Spiel Starten
+                </p>
+            </div>
+
+            <!-- Game Over -->
+            <div class="overlay" id="gameOver">
+                <h2 id="winnerText" style="color: #ff3333;">GAME OVER</h2>
+                <h3 id="finalScore" style="margin-bottom: 6px;">Score: 0</h3>
+                <div class="hs-banner" id="hsBanner">🏆 BEST: 0</div>
+                <div style="display:flex; gap:12px; flex-wrap:wrap; justify-content:center; margin-top:4px;">
+                    <button class="action-btn" style="opacity:1;" onclick="startGame()">↺ NOCHMAL</button>
+                    <button class="action-btn" style="opacity:1;" onclick="showMenu()">☰ HAUPTMENÜ</button>
+                </div>
+                <p class="legend" id="keyboardLegendGO" style="margin-top:12px;">
+                    [LEERTASTE] = Retry | [STRG] = Hauptmenü
+                </p>
+            </div>
+
+            <!-- Pause Overlay -->
+            <div class="overlay" id="pauseOverlay">
+                <h2>⏸ PAUSE</h2>
+                <button class="action-btn" style="opacity:1; margin-top:10px;" onclick="resumeGame()">▶ WEITER</button>
+                <p class="legend" id="pauseLegend" style="margin-top:10px;">
+                    [P] / [ESC] / [LEERTASTE] = Weiter
+                </p>
+            </div>
+        </div>
+
+        <!-- D-Pad Wrapper (Single + Multiplayer) -->
+        <div id="dpad-wrapper">
+            <!-- P1 D-pad -->
+            <div class="dpad-zone" id="dpad-p1-zone">
+                <div class="dpad-player-label" id="dpad-label-p1">P1</div>
+                <div class="dpad-inner">
+                    <div class="dpad-row">
+                        <button class="dpad-btn" id="dpad1-up">▲</button>
+                    </div>
+                    <div class="dpad-row">
+                        <button class="dpad-btn" id="dpad1-left">◀</button>
+                        <div class="dpad-center"></div>
+                        <button class="dpad-btn" id="dpad1-right">▶</button>
+                    </div>
+                    <div class="dpad-row">
+                        <button class="dpad-btn" id="dpad1-down">▼</button>
                     </div>
                 </div>
-            </div><!-- end #dpad-wrapper -->
+            </div>
 
-        </div><!-- end .game-center -->
-    </div><!-- end .game-wrapper -->
+            <!-- P2 D-pad (only shown in multiplayer) -->
+            <div class="dpad-zone" id="dpad-p2-zone" style="display:none;">
+                <div class="dpad-player-label" id="dpad-label-p2">P2</div>
+                <div class="dpad-inner">
+                    <div class="dpad-row">
+                        <button class="dpad-btn" id="dpad2-up">▲</button>
+                    </div>
+                    <div class="dpad-row">
+                        <button class="dpad-btn" id="dpad2-left">◀</button>
+                        <div class="dpad-center"></div>
+                        <button class="dpad-btn" id="dpad2-right">▶</button>
+                    </div>
+                    <div class="dpad-row">
+                        <button class="dpad-btn" id="dpad2-down">▼</button>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </div>
 
     <script>
         const canvas = document.getElementById('gameCanvas');
@@ -785,7 +750,24 @@
         const ROWS = canvas.height / TILE_SIZE;  // 30
 
         let gameState = 'MENU';
-        let gameLoop;
+        // ── RAF LOOP (v0.4: replaced setInterval for jitter-free timing) ──
+        let rafId         = null;
+        let gameSpeed     = 100;   // ms per tick
+        let lastFrameTime = 0;
+
+        function runLoop(timestamp) {
+            if (gameState !== 'PLAYING') return;
+            if (timestamp - lastFrameTime >= gameSpeed) {
+                lastFrameTime = timestamp;
+                update();
+            }
+            if (gameState === 'PLAYING') rafId = requestAnimationFrame(runLoop);
+        }
+
+        function stopLoop() {
+            if (rafId !== null) { cancelAnimationFrame(rafId); rafId = null; }
+        }
+
         let isMultiplayer = false;
 
         let currentDifficulty = 'medium';
@@ -818,8 +800,8 @@
 
         // ── POISON FOOD ───────────────────────────────────────────────────
         let poisonFood    = null;  // { x, y, ticksLeft }
-        const POISON_LIFETIME  = 80;  // ticks visible
-        const POISON_SPAWN_DIV = 35;  // spawn chance 1 in N ticks (roughly)
+        const POISON_LIFETIME  = 80;   // ticks visible
+        const POISON_SPAWN_DIV = 35;   // average ticks between spawns
 
         function spawnPoisonFood() {
             let valid = false, attempts = 0, newX, newY;
@@ -886,7 +868,7 @@
         function changeTheme(themeName) {
             currentTheme = themeName;
             document.body.setAttribute('data-theme', themeName);
-            if (!gameLoop) draw();
+            if (!rafId) draw();
         }
 
         // ── MODE ──────────────────────────────────────────────────────────
@@ -981,10 +963,12 @@
 
         // ── GAME FLOW ─────────────────────────────────────────────────────
         function startGame() {
-            document.getElementById('mainMenu').style.display = 'none';
-            document.getElementById('gameOver').style.display = 'none';
+            document.getElementById('mainMenu').style.display    = 'none';
+            document.getElementById('gameOver').style.display    = 'none';
+            document.getElementById('pauseOverlay').style.display = 'none';
             gameState   = 'PLAYING';
             isNewRecord = false;
+            frameCount  = 0;
             updateDpad();
 
             if (currentDifficulty === 'nightmare') {
@@ -998,38 +982,58 @@
 
             initEntities();
 
-            let speed = 100;
+            gameSpeed = 100;
             switch (currentDifficulty) {
-                case 'easy':      speed = 150; break;
-                case 'medium':    speed = 100; break;
-                case 'fast':      speed =  70; break;
-                case 'ultra':     speed =  45; break;
+                case 'easy':      gameSpeed = 150; break;
+                case 'medium':    gameSpeed = 100; break;
+                case 'fast':      gameSpeed =  70; break;
+                case 'ultra':     gameSpeed =  45; break;
                 case 'nightmare':
-                    speed = 35;
+                    gameSpeed = 35;
                     hunter.active = true;
                     hunter.x = Math.floor(COLS / 2);
                     hunter.y = Math.floor(ROWS / 2);
                     break;
             }
 
-            graceTicks     = Math.floor(1000 / speed);
+            graceTicks     = Math.floor(1000 / gameSpeed);
             p1.hungerTicks = -graceTicks;
             p2.hungerTicks = -graceTicks;
 
             updateScoreboard();
             updateHighscoreDisplay();
-            if (gameLoop) clearInterval(gameLoop);
-            gameLoop = setInterval(update, speed);
+
+            stopLoop();
+            lastFrameTime = 0;
+            rafId = requestAnimationFrame(runLoop);
         }
 
         function showMenu() {
-            if (gameLoop) { clearInterval(gameLoop); gameLoop = null; }
+            stopLoop();
             gameState = 'MENU';
-            document.getElementById('gameOver').style.display  = 'none';
-            document.getElementById('mainMenu').style.display  = 'flex';
+            document.getElementById('gameOver').style.display    = 'none';
+            document.getElementById('pauseOverlay').style.display = 'none';
+            document.getElementById('mainMenu').style.display    = 'flex';
             updateMenuSelection();
             updateDpad();
             draw();
+        }
+
+        // ── v0.4: PAUSE / RESUME ──────────────────────────────────────────
+        function pauseGame() {
+            if (gameState !== 'PLAYING') return;
+            gameState = 'PAUSED';
+            stopLoop();
+            document.getElementById('pauseOverlay').style.display = 'flex';
+            draw(); // render frozen frame
+        }
+
+        function resumeGame() {
+            if (gameState !== 'PAUSED') return;
+            document.getElementById('pauseOverlay').style.display = 'none';
+            gameState     = 'PLAYING';
+            lastFrameTime = 0;
+            rafId = requestAnimationFrame(runLoop);
         }
 
         function updateScoreboard() {
@@ -1078,7 +1082,7 @@
             else if (activeAddons.poison && poisonFood && head.x === poisonFood.x && head.y === poisonFood.y) {
                 applyPoisonEffect(snake);
                 poisonFood = null;
-                ateFood = true; // counts as "ate something" to prevent double-pop
+                ateFood = true;
             }
             else {
                 snake.body.pop();
@@ -1089,11 +1093,15 @@
                 if (snake.hungerTicks >= 50) {
                     snake.hungerTicks = 0;
                     if (snake.body.length > 1) {
+                        // Snake schrumpft und verliert Punkte
                         snake.body.pop();
                         snake.score = Math.max(0, snake.score - 5);
                         updateScoreboard();
                     } else {
-                        snake.dead = true;
+                        // v0.4 FIX: Bei Minimallänge (1 Segment) nicht töten,
+                        // nur Score-Abzug und Hunger-Reset → faireres Gameplay
+                        snake.score = Math.max(0, snake.score - 5);
+                        updateScoreboard();
                     }
                 }
             }
@@ -1158,13 +1166,14 @@
             }
 
             // Poison food lifecycle
+            // v0.4 FIX: gleichmäßige 1/35 Wahrscheinlichkeit pro Tick
+            // (statt nur alle 35 Ticks zu prüfen)
             if (activeAddons.poison) {
                 if (poisonFood) {
                     poisonFood.ticksLeft--;
                     if (poisonFood.ticksLeft <= 0) poisonFood = null;
                 } else {
-                    // Random spawn chance
-                    if (Math.floor(frameCount % POISON_SPAWN_DIV) === 0 && Math.random() < 0.6) {
+                    if (Math.random() < (1 / POISON_SPAWN_DIV)) {
                         spawnPoisonFood();
                     }
                 }
@@ -1189,11 +1198,12 @@
         }
 
         function endGame(titleText, scoreText) {
-            clearInterval(gameLoop);
-            gameLoop  = null;
+            stopLoop();
             gameState = 'GAMEOVER';
 
-            // Determine best score this run
+            // v0.4 FIX: Maiden-Spiral bei Spielende zurücksetzen
+            maidenProgress = 0;
+
             const bestThisRun = isMultiplayer ? Math.max(p1.score, p2.score) : p1.score;
             isNewRecord = checkAndSaveHighscore(bestThisRun);
 
@@ -1230,7 +1240,6 @@
             const pulse = Math.sin(frameCount * 0.18) * 2;
 
             if (style === 'pixel') {
-                // Pixel style (retro)
                 ctx.fillStyle = '#660066';
                 ctx.fillRect(px+3, py+3, TILE_SIZE-6, TILE_SIZE-6);
                 ctx.fillStyle = '#8bac0f';
@@ -1243,14 +1252,12 @@
                 ctx.beginPath();
                 ctx.arc(px+10, py+10, 7 + pulse/2, 0, Math.PI*2);
                 ctx.fill();
-                // Skull dot eyes
                 ctx.fillStyle = '#fff';
                 ctx.beginPath();
                 ctx.arc(px+7, py+9, 2, 0, Math.PI*2);
                 ctx.arc(px+13, py+9, 2, 0, Math.PI*2);
                 ctx.fill();
             } else {
-                // Diamond style (default)
                 ctx.fillStyle   = '#cc00cc';
                 ctx.shadowBlur  = 12 + pulse;
                 ctx.shadowColor = '#ff00ff';
@@ -1274,7 +1281,7 @@
             for (let x = 0; x < canvas.width;  x += TILE_SIZE) { ctx.moveTo(x, 0); ctx.lineTo(x, canvas.height); }
             for (let y = 0; y < canvas.height; y += TILE_SIZE) { ctx.moveTo(0, y); ctx.lineTo(canvas.width, y); }
             ctx.stroke();
-            if (!gameLoop) return;
+            if (gameState === 'MENU') return;
 
             if (activeAddons.maiden) {
                 ctx.fillStyle  = getComputedStyle(document.documentElement).getPropertyValue('--maiden-color').trim() || '#ff0055';
@@ -1320,7 +1327,7 @@
         function drawRetro() {
             ctx.fillStyle = '#8bac0f';
             ctx.fillRect(0, 0, canvas.width, canvas.height);
-            if (!gameLoop) return;
+            if (gameState === 'MENU') return;
             const pixelColor = '#112211';
             if (activeAddons.maiden) {
                 ctx.fillStyle = pixelColor;
@@ -1366,7 +1373,7 @@
             let grad = ctx.createLinearGradient(0, 0, 0, canvas.height);
             grad.addColorStop(0, '#003366'); grad.addColorStop(1, '#00001a');
             ctx.fillStyle = grad; ctx.fillRect(0, 0, canvas.width, canvas.height);
-            if (!gameLoop) return;
+            if (gameState === 'MENU') return;
             if (activeAddons.maiden) {
                 ctx.fillStyle = '#000033';
                 for (let i = 0; i < maidenProgress; i++) {
@@ -1402,7 +1409,7 @@
         // ── INFERNO ───────────────────────────────────────────────────────
         function drawInferno() {
             ctx.fillStyle = '#1a0000'; ctx.fillRect(0, 0, canvas.width, canvas.height);
-            if (!gameLoop) return;
+            if (gameState === 'MENU') return;
             if (activeAddons.maiden) {
                 ctx.fillStyle = '#4d0000';
                 for (let i = 0; i < maidenProgress; i++) {
@@ -1452,7 +1459,7 @@
                     ctx.beginPath(); ctx.arc(x+TILE_SIZE, y+TILE_SIZE, TILE_SIZE/3, 0, Math.PI*2); ctx.fill();
                 }
             }
-            if (!gameLoop) return;
+            if (gameState === 'MENU') return;
             if (activeAddons.maiden) {
                 ctx.fillStyle = '#8b4513'; ctx.shadowBlur = 5; ctx.shadowColor = '#8b4513';
                 for (let i = 0; i < maidenProgress; i++) {
@@ -1512,16 +1519,14 @@
         }
 
         /* ══════════════════════════════════════════════════════════════════
-           NEW v0.3 THEMES
+           v0.3 THEMES
         ══════════════════════════════════════════════════════════════════ */
 
         // ── MATRIX CODE ───────────────────────────────────────────────────
         function drawMatrix() {
-            // Background: pure black
             ctx.fillStyle = '#000500';
             ctx.fillRect(0, 0, canvas.width, canvas.height);
 
-            // Faint green scan-line grid
             ctx.strokeStyle = 'rgba(0, 255, 65, 0.04)';
             ctx.lineWidth = 1;
             ctx.beginPath();
@@ -1529,22 +1534,19 @@
             for (let y = 0; y < canvas.height; y += TILE_SIZE) { ctx.moveTo(0, y); ctx.lineTo(canvas.width, y); }
             ctx.stroke();
 
-            // Horizontal scanline overlay
             ctx.fillStyle = 'rgba(0, 255, 65, 0.015)';
             for (let y = 0; y < canvas.height; y += 4) {
                 ctx.fillRect(0, y, canvas.width, 1);
             }
 
-            if (!gameLoop) return;
+            if (gameState === 'MENU') return;
 
-            // Maiden: dark green blocks
             if (activeAddons.maiden) {
                 ctx.fillStyle  = '#001400';
                 ctx.shadowBlur = 0;
                 for (let i = 0; i < maidenProgress; i++) {
                     ctx.fillRect(maidenSpiral[i].x*TILE_SIZE, maidenSpiral[i].y*TILE_SIZE, TILE_SIZE, TILE_SIZE);
                 }
-                // Inner highlight line
                 ctx.strokeStyle = 'rgba(0,255,65,0.2)';
                 ctx.lineWidth = 1;
                 for (let i = 0; i < maidenProgress; i++) {
@@ -1552,7 +1554,6 @@
                 }
             }
 
-            // Food: bright white-green pulsing square with "1" character
             if (food.x !== -999) {
                 const pulse = Math.sin(frameCount * 0.25) * 4;
                 ctx.fillStyle   = '#ffffff';
@@ -1567,7 +1568,6 @@
                 ctx.fillText('1', food.x*TILE_SIZE+10, food.y*TILE_SIZE+11);
             }
 
-            // Poison: dark red glitchy block
             if (activeAddons.poison && poisonFood && poisonFood.x >= 0) {
                 const glitch = frameCount % 4 < 2 ? 1 : 0;
                 ctx.fillStyle   = '#660000';
@@ -1581,7 +1581,6 @@
                 ctx.shadowBlur = 0;
             }
 
-            // Obstacles: dark green blocks
             if (activeAddons.obstacles) {
                 ctx.shadowBlur = 0;
                 ctx.fillStyle = '#003300';
@@ -1593,8 +1592,7 @@
                 });
             }
 
-            // Snakes
-            const drawSnakeMatrix = (snake, color, eyeColor) => {
+            const drawSnakeMatrix = (snake, color) => {
                 if (snake.dead) return;
                 snake.body.forEach((seg, i) => {
                     const bright = i === 0 ? color : 'rgba(0,200,50,' + (0.3 + 0.5 * (1 - i / snake.body.length)) + ')';
@@ -1602,7 +1600,6 @@
                     ctx.shadowBlur  = i === 0 ? 12 : 3;
                     ctx.shadowColor = color;
                     ctx.fillRect(seg.x*TILE_SIZE+2, seg.y*TILE_SIZE+2, TILE_SIZE-4, TILE_SIZE-4);
-                    // Head: draw ">" character
                     if (i === 0) {
                         ctx.shadowBlur = 0;
                         ctx.fillStyle = '#000';
@@ -1612,10 +1609,9 @@
                     }
                 });
             };
-            drawSnakeMatrix(p1, '#00ff41', '#ffffff');
-            if (isMultiplayer) drawSnakeMatrix(p2, '#00bbff', '#ffffff');
+            drawSnakeMatrix(p1, '#00ff41');
+            if (isMultiplayer) drawSnakeMatrix(p2, '#00bbff');
 
-            // Hunter: red blinking block
             if (hunter.active) {
                 const blink = Math.floor(frameCount / 5) % 2 === 0;
                 ctx.fillStyle   = blink ? '#ff0000' : '#880000';
@@ -1634,7 +1630,6 @@
 
         // ── VAPORWAVE ─────────────────────────────────────────────────────
         function drawVaporwave() {
-            // Sky gradient
             const skyGrad = ctx.createLinearGradient(0, 0, 0, canvas.height * 0.55);
             skyGrad.addColorStop(0, '#0d0028');
             skyGrad.addColorStop(0.5, '#2e0050');
@@ -1642,14 +1637,12 @@
             ctx.fillStyle = skyGrad;
             ctx.fillRect(0, 0, canvas.width, canvas.height * 0.55);
 
-            // Floor gradient
             const floorGrad = ctx.createLinearGradient(0, canvas.height * 0.55, 0, canvas.height);
             floorGrad.addColorStop(0, '#1a0040');
             floorGrad.addColorStop(1, '#0d001a');
             ctx.fillStyle = floorGrad;
             ctx.fillRect(0, canvas.height * 0.55, canvas.width, canvas.height * 0.45);
 
-            // Sun/horizon glow
             const sunY = canvas.height * 0.55;
             const sunGrad = ctx.createRadialGradient(canvas.width/2, sunY, 0, canvas.width/2, sunY, 180);
             sunGrad.addColorStop(0, 'rgba(255, 80, 180, 0.5)');
@@ -1658,28 +1651,24 @@
             ctx.fillStyle = sunGrad;
             ctx.fillRect(0, 0, canvas.width, canvas.height);
 
-            // Perspective grid (floor)
             const horizon = canvas.height * 0.55;
             const vpX = canvas.width / 2;
             ctx.lineWidth = 0.8;
 
-            // Horizontal grid lines
             for (let n = 0; n <= 12; n++) {
                 let t = Math.pow(n / 12, 1.8);
                 let y = horizon + t * (canvas.height - horizon);
                 ctx.strokeStyle = `rgba(255, 113, 206, ${0.1 + t * 0.45})`;
                 ctx.beginPath(); ctx.moveTo(0, y); ctx.lineTo(canvas.width, y); ctx.stroke();
             }
-            // Vertical converging lines
             for (let n = 0; n <= 16; n++) {
                 let x = (n / 16) * canvas.width;
                 ctx.strokeStyle = 'rgba(185, 103, 255, 0.25)';
                 ctx.beginPath(); ctx.moveTo(vpX, horizon); ctx.lineTo(x, canvas.height); ctx.stroke();
             }
 
-            if (!gameLoop) return;
+            if (gameState === 'MENU') return;
 
-            // Maiden: dark purple blocks
             if (activeAddons.maiden) {
                 ctx.fillStyle = '#2a0045';
                 for (let i = 0; i < maidenProgress; i++) {
@@ -1692,7 +1681,6 @@
                 }
             }
 
-            // Food: pink star burst
             if (food.x !== -999) {
                 const pulse = Math.sin(frameCount * 0.2) * 2;
                 ctx.strokeStyle = '#ff71ce';
@@ -1711,7 +1699,6 @@
                 ctx.beginPath(); ctx.arc(fx, fy, 5, 0, Math.PI*2); ctx.fill();
             }
 
-            // Poison: glitchy teal block
             if (activeAddons.poison && poisonFood && poisonFood.x >= 0) {
                 const glitch = frameCount % 6 < 2 ? 2 : 0;
                 ctx.fillStyle   = '#004040';
@@ -1724,7 +1711,6 @@
                 ctx.shadowBlur = 0;
             }
 
-            // Obstacles: wireframe magenta
             if (activeAddons.obstacles) {
                 ctx.shadowBlur = 0;
                 ctx.strokeStyle = '#ff71ce';
@@ -1736,7 +1722,6 @@
                 });
             }
 
-            // Snakes: rounded circles with pink/cyan
             const drawSnakeVaporwave = (snake, headColor, bodyColor) => {
                 if (snake.dead) return;
                 snake.body.forEach((seg, i) => {
@@ -1773,20 +1758,17 @@
         }
 
         // ── DARK FOREST ───────────────────────────────────────────────────
-        // Deterministic pseudo-random for stable background trees
         function forestRng(x, y) {
             return ((x * 374761393 + y * 1234567891 + 999983) % 999983) / 999983;
         }
 
         function drawDarkForest() {
-            // Background: deep dark green gradient
             const bgGrad = ctx.createLinearGradient(0, 0, 0, canvas.height);
             bgGrad.addColorStop(0, '#060d06');
             bgGrad.addColorStop(1, '#0d1a08');
             ctx.fillStyle = bgGrad;
             ctx.fillRect(0, 0, canvas.width, canvas.height);
 
-            // Background texture: scattered "bush" circles (stable via rng)
             for (let gx = 0; gx < COLS; gx++) {
                 for (let gy = 0; gy < ROWS; gy++) {
                     const r = forestRng(gx, gy);
@@ -1800,9 +1782,8 @@
                 }
             }
 
-            if (!gameLoop) return;
+            if (gameState === 'MENU') return;
 
-            // Maiden: dark shadow moss
             if (activeAddons.maiden) {
                 ctx.fillStyle = '#0a1a05';
                 for (let i = 0; i < maidenProgress; i++) {
@@ -1815,7 +1796,6 @@
                 }
             }
 
-            // Food: bright red berry
             if (food.x !== -999) {
                 const pulse = Math.sin(frameCount * 0.22) * 1.5;
                 ctx.fillStyle   = '#cc2200';
@@ -1824,12 +1804,10 @@
                 ctx.beginPath();
                 ctx.arc(food.x*TILE_SIZE+10, food.y*TILE_SIZE+11, 7 + pulse/2, 0, Math.PI*2);
                 ctx.fill();
-                // Highlight
                 ctx.fillStyle = 'rgba(255,200,180,0.5)';
                 ctx.beginPath();
                 ctx.arc(food.x*TILE_SIZE+8, food.y*TILE_SIZE+8, 2.5, 0, Math.PI*2);
                 ctx.fill();
-                // Stem
                 ctx.strokeStyle = '#556b2f';
                 ctx.lineWidth = 1.5;
                 ctx.beginPath();
@@ -1838,46 +1816,37 @@
                 ctx.stroke();
             }
 
-            // Poison: dark purple mushroom
             if (activeAddons.poison && poisonFood && poisonFood.x >= 0) {
                 const px = poisonFood.x*TILE_SIZE, py = poisonFood.y*TILE_SIZE;
                 const pulse = Math.sin(frameCount * 0.18) * 1;
                 ctx.fillStyle   = '#5a007a';
                 ctx.shadowBlur  = 8 + pulse;
                 ctx.shadowColor = '#aa00cc';
-                // Cap
                 ctx.beginPath();
                 ctx.ellipse(px+10, py+9, 8+pulse, 6, 0, Math.PI, 0);
                 ctx.fill();
-                // Stem
                 ctx.fillStyle = '#3d1a4a';
                 ctx.fillRect(px+7, py+9, 6, 7);
-                // Spots
                 ctx.fillStyle = 'rgba(220,180,255,0.6)';
                 ctx.beginPath(); ctx.arc(px+8, py+7, 1.5, 0, Math.PI*2); ctx.fill();
                 ctx.beginPath(); ctx.arc(px+12, py+6, 1, 0, Math.PI*2); ctx.fill();
                 ctx.shadowBlur = 0;
             }
 
-            // Obstacles: tree stumps
             if (activeAddons.obstacles) {
                 ctx.shadowBlur = 0;
                 obstacles.forEach(o => {
                     const ox = o.x*TILE_SIZE, oy = o.y*TILE_SIZE;
-                    // Stump base
                     ctx.fillStyle = '#3d2007';
                     ctx.beginPath(); ctx.arc(ox+10, oy+12, 8, 0, Math.PI*2); ctx.fill();
-                    // Wood rings
                     ctx.strokeStyle = '#5a3010'; ctx.lineWidth = 1;
                     ctx.beginPath(); ctx.arc(ox+10, oy+12, 5, 0, Math.PI*2); ctx.stroke();
                     ctx.beginPath(); ctx.arc(ox+10, oy+12, 2, 0, Math.PI*2); ctx.stroke();
-                    // Moss top
                     ctx.fillStyle = 'rgba(60, 100, 30, 0.6)';
                     ctx.beginPath(); ctx.ellipse(ox+10, oy+5, 9, 4, 0, 0, Math.PI*2); ctx.fill();
                 });
             }
 
-            // Snakes: organic rounded segments, earthy colors
             const drawSnakeForest = (snake, color) => {
                 if (snake.dead) return;
                 for (let i = snake.body.length - 1; i >= 0; i--) {
@@ -1891,7 +1860,6 @@
                     ctx.arc(seg.x*TILE_SIZE+10, seg.y*TILE_SIZE+10, i === 0 ? 9 : 7, 0, Math.PI*2);
                     ctx.fill();
                     if (i === 0) {
-                        // Eyes
                         ctx.globalAlpha = 1;
                         ctx.shadowBlur  = 0;
                         ctx.fillStyle = '#ff4400';
@@ -1907,7 +1875,6 @@
             drawSnakeForest(p1, '#6aaa40');
             if (isMultiplayer) drawSnakeForest(p2, '#b07830');
 
-            // Hunter: glowing red eyes in darkness
             if (hunter.active) {
                 ctx.shadowBlur = 0;
                 ctx.fillStyle = 'rgba(20, 5, 5, 0.7)';
@@ -1959,7 +1926,7 @@
             }
         }
 
-        /* ── D-PAD LISTENERS (registered once, statically) ─────────────── */
+        /* ── D-PAD LISTENERS ───────────────────────────────────────────── */
         [['dpad1-up','UP','p1'], ['dpad1-down','DOWN','p1'], ['dpad1-left','LEFT','p1'], ['dpad1-right','RIGHT','p1'],
          ['dpad2-up','UP','p2'], ['dpad2-down','DOWN','p2'], ['dpad2-left','LEFT','p2'], ['dpad2-right','RIGHT','p2']
         ].forEach(([id, dir, player]) => {
@@ -1968,6 +1935,8 @@
             btn.addEventListener('touchstart', (e) => {
                 e.preventDefault(); e.stopPropagation();
                 pushInput(player === 'p2' ? p2 : p1, dir);
+                // v0.4: Haptisches Feedback auf unterstützten Geräten
+                if (navigator.vibrate) navigator.vibrate(5);
             }, { passive: false });
             btn.addEventListener('mousedown', () => pushInput(player === 'p2' ? p2 : p1, dir));
         });
@@ -1978,6 +1947,12 @@
         document.addEventListener('keydown', (event) => {
             const key = event.key;
             if (["ArrowUp","ArrowDown","ArrowLeft","ArrowRight"," "].includes(key)) event.preventDefault();
+
+            // ── PAUSE state: any resume key ──
+            if (gameState === 'PAUSED') {
+                if (key === 'p' || key === 'P' || key === 'Escape' || key === ' ') resumeGame();
+                return;
+            }
 
             if (gameState === 'MENU') {
                 if (key === ' ') { startGame(); }
@@ -2009,13 +1984,16 @@
 
             if (gameState !== 'PLAYING') return;
 
+            // ── Pause ──
+            if (key === 'p' || key === 'P' || key === 'Escape') { pauseGame(); return; }
+
             // Player 1 (arrow keys)
-            if (key === 'ArrowUp')    pushInput(p1, 'UP');
+            if      (key === 'ArrowUp')    pushInput(p1, 'UP');
             else if (key === 'ArrowDown')  pushInput(p1, 'DOWN');
             else if (key === 'ArrowLeft')  pushInput(p1, 'LEFT');
             else if (key === 'ArrowRight') pushInput(p1, 'RIGHT');
 
-            // Player 2 (WASD) — keyboard only, independent of P1
+            // Player 2 (WASD)
             if (isMultiplayer) {
                 const k = key.toLowerCase();
                 if      (k === 'w') pushInput(p2, 'UP');

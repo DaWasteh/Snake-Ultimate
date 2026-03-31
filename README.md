@@ -1,18 +1,18 @@
-# 🐍 Snake Ultimate (v0.3)
+# 🐍 Snake Ultimate (v0.4)
 
 Snake Ultimate ist eine erweiterte Version des klassischen Arcade-Spiels "Snake". Das Projekt wurde vollständig in HTML5, CSS3 und Vanilla JavaScript entwickelt und kommt ohne externe Frameworks aus.
 
-Es bietet neben dem klassischen Einzelspieler-Modus einen lokalen Multiplayer, verschiedene visuelle Themes und anpassbare Spielmechaniken (Addons) – vollständig optimiert für Desktop, Tablet und Mobile.
+Es bietet neben dem klassischen Einzelspieler-Modus einen lokalen Multiplayer, 8 visuelle Themes und anpassbare Spielmechaniken (Addons) – vollständig optimiert für Desktop, Tablet und Mobile.
 
 ---
 
 ## 📸 Screenshots
 
-![Neon Cyberpunk](image.png)
+![Neon Cyberpunk Theme](image.png)
 Das Hauptmenü im „Neon Cyberpunk" Theme.
 
-![Classic 3310](image-1.png)
-Das „Classic 3310" Theme beim Spielen mit Addon's.
+![Classic 3310 Theme](image-1.png)
+Das „Classic 3310" Theme beim Spielen.
 
 Und noch 6 weitere Styles!
 
@@ -31,15 +31,15 @@ Und noch 6 weitere Styles!
 - 🌊 **Deep Sea:** Organische, runde Formen und Tiefsee-Farbverlauf.
 - 🔥 **Inferno Blood:** Dunkelrote Farbgebung mit gezackten Schlangenmodellen.
 - 🌿 **Plants vs. Zombies:** Grüner Rasen, Sonnenblumen-Food, Zombie-Hindernisse.
-- 💻 **Matrix Code:** Schwarzer Hintergrund, grüne Glyphen, Scan-Line-Overlay.
-- 🌸 **Vaporwave:** Perspektivisches Raster, Sonnenuntergang-Gradient, Pink/Lila-Palette.
-- 🌲 **Dark Forest:** Prozeduraler Waldhintergrund, Beeren als Food, Baumstumpf-Hindernisse.
+- 💻 **Matrix Code:** Terminal-Ästhetik mit Glitch-Effekten und Scanlines.
+- 🌸 **Vaporwave:** Retrowave-Perspektivgrid mit Pink/Lila-Palette.
+- 🌲 **Dark Forest:** Organische Waldtextur mit roten Schlangenaugen.
 
 **Tastaturbedienung:** Das gesamte Spiel inklusive Menü lässt sich über die Tastatur steuern.
 
-**Touch-Steuerung:** Swipe-Gesten auf dem Spielfeld und On-Screen D-Pad für komfortable mobile Bedienung. Im Multiplayer stehen zwei unabhängige D-Pads für simultanes Multi-Touch bereit.
+**Touch-Steuerung:** Swipe-Gesten auf dem Spielfeld und On-Screen D-Pad für komfortable mobile Bedienung.
 
-**Highscore-Speicherung:** Bester Punktestand wird persistent im Local Storage gesichert und in der Top-Bar angezeigt.
+**Pause-Funktion:** Spiel jederzeit pausierbar per Tastatur oder Mobile-Button.
 
 ---
 
@@ -61,12 +61,12 @@ Die Spielgeschwindigkeit und zusätzliche Mechaniken lassen sich modular anpasse
 
 ### Addons (Toggles)
 
-| Addon           | Beschreibung |
-|-----------------|--------------|
-| 🪨 Hindernisse  | Für jedes 3. gesammelte Futter spawnt ein permanentes Hindernis. |
-| 🥩 Hunger       | Leiste leert sich kontinuierlich. Bei 0: Schlange schrumpft und Punktabzug. Fressen füllt sie wieder. |
+| Addon            | Beschreibung |
+|------------------|--------------|
+| 🪨 Hindernisse   | Für jedes 3. gesammelte Futter spawnt ein permanentes Hindernis. |
+| 🥩 Hunger        | Leiste leert sich kontinuierlich. Bei 0: Schlange schrumpft und Punktabzug. Bei Länge 1: nur Score-Abzug, kein sofortiger Tod. Fressen füllt sie wieder. |
 | 🌀 Eis. Jungfrau | Wand wächst spiralförmig von außen nach innen. Fressen drückt sie zurück. |
-| ☠️ Gift-Äpfel   | Sporadisch erscheinende Giftfrüchte: Fressen kostet 15 Punkte und schrumpft die Schlange. |
+| 🍎 Gift-Äpfel    | Lila Äpfel erscheinen zufällig. Bei Fressen: Score-Abzug + Schlange schrumpft. |
 
 ---
 
@@ -89,6 +89,8 @@ Die Spielgeschwindigkeit und zusätzliche Mechaniken lassen sich modular anpasse
 |-----------|-------------------------------------|
 | Spieler 1 | `↑` `↓` `←` `→` (Pfeiltasten)      |
 | Spieler 2 | `W` `A` `S` `D`                     |
+| Pause     | `P` oder `Escape`                   |
+| Weiter    | `P`, `Escape` oder `Leertaste`      |
 
 ### Mobile Steuerung
 
@@ -96,7 +98,7 @@ Die Spielgeschwindigkeit und zusätzliche Mechaniken lassen sich modular anpasse
 |-----------|---------------------------------------------------|
 | Swipe     | Wischen auf dem Spielfeld (min. 25 px Distanz)    |
 | D-Pad     | On-Screen Steuerkreuz erscheint automatisch beim Spielstart |
-| Multiplayer | Zwei separate D-Pad-Zonen für simultanes Multi-Touch |
+| Vibration | D-Pad-Buttons geben kurzes haptisches Feedback    |
 
 ---
 
@@ -118,59 +120,59 @@ Kompatibel mit allen modernen Browsern: Chrome, Firefox, Edge, Safari (Desktop &
 
 ## 🛠️ Entwicklung & Architektur
 
-### v0.3 – Layout-Overhaul & Neue Themes
+### v0.4 – Performance & Balance Update
 
-**Bugfixes (Responsive Layout):**
-- 🐛 **[KRITISCH]** Fehlender `.game-center`-Wrapper: Ohne diesen Wrapper war kein `flex-row`-Layout in Landscape möglich → D-Pad überlagerte mit `position: fixed` den Canvas.
-- 🐛 **[KRITISCH]** D-Pad `position: fixed` in Landscape → schwebte über dem Spielfeld statt daneben zu stehen. Jetzt `position: static` als normales Flex-Item im `.game-center`-Row.
-- 🐛 **[HOCH]** Canvas-Breite in Landscape nicht D-Pad-aware → Canvas nutzte volle Viewport-Breite und wurde vom D-Pad überdeckt.
-- 🐛 **[HOCH]** Keyboard-Legende zeigte `[1,2,3]` statt `[1,2,3,4]` — Gift-Äpfel-Shortcut fehlte.
-- 🐛 Doppelter Abstand zwischen Canvas und D-Pad durch redundante Kombination von `margin-top` und `gap`.
-- 🐛 `.overlay` hatte kein globales `overflow-y: auto` → Start-Button auf sehr kleinen Fenstern nicht erreichbar.
-- 🐛 Multiplayer-Landscape: Zwei D-Pads mit 44px Buttons überschritten 275px auf iPhone SE Landscape → Overflow.
-- 🐛 `.topbar-hs` fehlte `flex-shrink: 0` → Highscore-Anzeige wurde bei schmalem Viewport gequetscht.
+Basierend auf einer systematischen Codeanalyse wurden kritische Bugs behoben, die Game Loop performanter gestaltet und neue Komfort-Features ergänzt.
 
-**Layout-Verbesserungen:**
-- ✅ Neuer `.game-center`-Wrapper umschließt Canvas + D-Pad: Portrait → `flex-column`, Landscape → `flex-row`.
-- ✅ Canvas in Landscape: `width: auto; height: 100%; aspect-ratio: 4/3; flex-shrink: 1` — passt sich D-Pad-Breite korrekt an.
-- ✅ Multiplayer-Landscape: D-Pad-Buttons auf 32px verkleinert, kein Overflow mehr.
-- ✅ `flex-shrink: 0` auf `.topbar-hs` gesetzt.
+**Bugfixes:**
+- 🐛 **[KRITISCH]** Hunger-Addon tötete die Schlange sofort bei Länge 1 → Jetzt: Score-Abzug und Hunger-Reset bei Minimallänge, kein sofortiger Tod.
+- 🐛 Eiserne Jungfrau-Spiralfortschritt (`maidenProgress`) wurde nach Spielende nicht zurückgesetzt → Fix in `endGame()`.
+- 🐛 Gift-Äpfel-Spawn wurde nur alle 35 Ticks geprüft (Batch-Effekt) → Jetzt gleichmäßige `1/35`-Wahrscheinlichkeit pro Tick.
 
-**Neue Features:**
-- ✅ 3 neue visuelle Themes: **Matrix Code**, **Vaporwave**, **Dark Forest** (je eigene Draw-Funktion + CSS-Theme-Variablen).
-- ✅ **Gift-Äpfel-Addon** (☠️): Giftfrüchte spawnen sporadisch, verschwinden nach kurzer Zeit, Fressen kostet Punkte und Länge.
-- ✅ **Highscore-Persistenz** via Local Storage (`snakeUltimate_hs`): Bester Wert bleibt über Sessions hinweg erhalten, wird in Top-Bar und Game-Over-Screen angezeigt. Neuer Rekord löst Blink-Animation aus.
+**Performance:**
+- ✅ Game Loop auf `requestAnimationFrame` umgestellt (war `setInterval`) → Kein Timer-Jitter mehr bei hoher CPU-Last, synchron mit Display-Refresh.
+
+**Features:**
+- ✅ **Pause-Funktion:** `[P]` oder `[ESC]` pausiert das Spiel. `[P]`/`[ESC]`/`[Leertaste]` setzt fort. Auf Mobile: „▶ WEITER"-Button im Pause-Overlay.
+- ✅ **Haptisches Feedback:** D-Pad-Buttons auf mobilen Geräten mit `navigator.vibrate(5)` Kurzvibrierung bei Antippen.
+
+### v0.3 – Themes Expansion
+
+**Neue Themes:**
+- ✅ Matrix Code Theme (Terminal-Ästhetik, Glitch-Food, Scanline-Overlay)
+- ✅ Vaporwave Theme (Retrowave-Perspektivgrid, pulsierendes Stern-Food)
+- ✅ Dark Forest Theme (Prozedurale Baumtextur via `forestRng()`, Pilz-Giftäpfel)
+
+**Neue Addons:**
+- ✅ Gift-Äpfel ([4] GIFT-ÄPFEL) mit theme-spezifischem Rendering und Pulsiereffekten
 
 ### v0.2 – Bugfixes & Mobile Overhaul
 
 **Bugfixes:**
-- 🐛 **[KRITISCH]** `showMenu()` fügte bei jedem Aufruf neue Event-Listener auf den Start-Button → `startGame()` wurde doppelt oder mehrfach aufgerufen → Spiel startete nicht korrekt auf Mobile.
-- 🐛 **[KRITISCH]** Overlay war `position: absolute` innerhalb des 4:3-Game-Containers → auf Landscape-Phones (16:9, 18:9) nur ~250px hoch → Menü war abgeschnitten und nicht scrollbar.
-- 🐛 Swipe-Erkennung fehlte Mindestabstand-Check → jede 1px-Bewegung registrierte Richtungswechsel.
-- 🐛 `resizeCanvas()` setzte `canvas.style.width/height` per JavaScript, während CSS gleichzeitig `width: 100%` setzte → Größenkonflikt auf Mobile.
-- 🐛 Doppelter `@media (max-width: 600px)` Block (140 Zeilen redundantes CSS).
-- 🐛 PvZ-Theme war im Code implementiert aber nicht im Style-Dropdown auswählbar.
+- 🐛 **[KRITISCH]** `showMenu()` fügte bei jedem Aufruf neue Event-Listener auf den Start-Button → `startGame()` wurde mehrfach aufgerufen.
+- 🐛 **[KRITISCH]** Overlay war `position: absolute` → auf Landscape-Phones nur ~250px hoch, abgeschnitten.
+- 🐛 Swipe-Erkennung fehlte Mindestabstand-Check.
+- 🐛 `resizeCanvas()` CSS/JS-Größenkonflikt auf Mobile.
+- 🐛 Doppelter `@media (max-width: 600px)` Block (140 Zeilen redundant).
+- 🐛 PvZ-Theme war implementiert aber nicht im Dropdown.
 
 **Mobile Improvements:**
-- ✅ Overlay wird auf Touch-Geräten zu `position: fixed; inset: 0` → immer vollbildschirmfüllend und scrollbar.
+- ✅ Overlay auf Touch-Geräten `position: fixed; inset: 0`.
 - ✅ Separate CSS-Breakpoints für Portrait (≤600px) und Landscape (max-height: 500px).
-- ✅ `touch-action: manipulation` auf allen Buttons → eliminiert 300ms Tap-Delay.
-- ✅ On-Screen D-Pad erscheint automatisch auf Touch-Geräten während des Spiels.
-- ✅ Game-Over-Screen hat jetzt zwei klare Buttons: „↺ NOCHMAL" und „☰ HAUPTMENÜ".
-- ✅ Keyboard-Hints werden auf Touch-Geräten ausgeblendet.
-- ✅ `viewport-fit=cover` + `user-scalable=no` für Notch-Geräte und sauberere Darstellung.
+- ✅ `touch-action: manipulation` auf allen Buttons.
+- ✅ On-Screen D-Pad mit automatischer Multiplayer-Erkennung.
+- ✅ `viewport-fit=cover` + `user-scalable=no` für Notch-Geräte.
 
 ### v0.1 – Initiale Version
 
-Bei der Entwicklung wurde auf eine klare Trennung der Rendering-Logik geachtet. Jedes Theme nutzt eine eigene Draw-Funktion, um individuelle Formen (Quadrate, Kreise, Diamanten) performant auf das Canvas zu zeichnen. Zudem ist eine State-Machine implementiert, die den Wechsel zwischen Menü, aktivem Spiel und Game-Over-Status verwaltet. Die Input-Queue verhindert sofortige U-Turns bei schnellen Tastenfolgen.
+Klare Trennung der Rendering-Logik pro Theme. State-Machine (MENU → PLAYING → GAMEOVER). Input-Queue verhindert sofortige U-Turns.
 
 ---
 
 ## 📋 Geplante Erweiterungen
 
-- [x] ~~Highscore-Speicherung (Local Storage)~~ ✅ v0.3
-- [x] ~~Multiplayer-D-Pad auf Mobile (getrennte Zonen für P1/P2)~~ ✅ v0.3
-- [ ] Soundeffekte (v0.4)
+- [ ] Soundeffekte
+- [ ] Multiplayer-D-Pad auf Mobile (getrennte Zonen für P1/P2)
 
 ---
 
