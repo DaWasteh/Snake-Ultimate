@@ -173,6 +173,8 @@ Klare Trennung der Rendering-Logik pro Theme. State-Machine (MENU → PLAYING �
 
 - [ ] Soundeffekte
 - [ ] Multiplayer-D-Pad auf Mobile (getrennte Zonen für P1/P2)
+- [ ] Sichtbarkeit der Gitterlinien erhöhen
+- [ ] Mehr Geschwindigkeitsmodi (125ms und 175ms)
 
 ---
 
