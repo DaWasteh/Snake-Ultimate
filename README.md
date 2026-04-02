@@ -171,10 +171,12 @@ Klare Trennung der Rendering-Logik pro Theme. State-Machine (MENU → PLAYING �
 
 ## 📋 Geplante Erweiterungen
 
-- [ ] Soundeffekte
+- [ ] Soundeffekte + 8bit Music inclusive on/off toggle
 - [ ] Multiplayer-D-Pad auf Mobile (getrennte Zonen für P1/P2)
 - [ ] Sichtbarkeit der Gitterlinien erhöhen
+- [ ] Sichtbarkeit der "Eisernen Jungfrau" erhöhen
 - [ ] Mehr Geschwindigkeitsmodi (125ms und 175ms)
+- [ ] Controller Unterstützung für Mobile und PC hinzufügen
 
 ---
 
