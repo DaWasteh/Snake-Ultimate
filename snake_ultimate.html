@@ -350,6 +350,26 @@
             opacity: 1;
             box-shadow: 0 0 8px var(--ui-accent);
         }
+        
+        /* Sound Toggle Buttons */
+        #btn-sfx-toggle {
+            font-weight: bold;
+        }
+        #btn-sfx-toggle.active {
+            background-color: rgba(255, 165, 0, 0.3) !important;
+            border-style: solid !important;
+            opacity: 1 !important;
+            box-shadow: 0 0 8px orange !important;
+        }
+        #btn-music-toggle {
+            font-weight: bold;
+        }
+        #btn-music-toggle.active {
+            background-color: rgba(255, 215, 0, 0.3) !important;
+            border-style: solid !important;
+            opacity: 1 !important;
+            box-shadow: 0 0 8px gold !important;
+        }
         button.addon-btn.locked-addon {
             border-color: #ff0000 !important;
             color: #ff0000 !important;
@@ -606,6 +626,177 @@
                 #dpad-wrapper.visible { display: flex; }
             }
         }
+
+        /* ===== MOBILE OVERLAY SETTINGS (Style + Volume im Menü) ===== */
+        .overlay-mobile-settings {
+            display: none;
+            flex-direction: column;
+            gap: 8px;
+            width: min(90%, 400px);
+            padding: 8px 12px;
+            background: rgba(0, 0, 0, 0.25);
+            border-radius: 6px;
+            border: 1px solid rgba(255,255,255,0.1);
+            margin-bottom: 6px;
+        }
+        .overlay-style-row {
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            gap: 8px;
+            font-size: clamp(10px, 2vw, 13px);
+        }
+        .overlay-style-row select {
+            font-size: clamp(10px, 2vw, 13px);
+            padding: 4px 8px;
+        }
+        .overlay-vol-row {
+            display: flex;
+            align-items: center;
+            gap: 6px;
+            justify-content: center;
+            font-size: 12px;
+            flex-wrap: wrap;
+        }
+        .overlay-vol-row input[type=range] {
+            width: 75px;
+            height: 6px;
+            -webkit-appearance: none;
+            appearance: none;
+            background: rgba(255,255,255,0.25);
+            border-radius: 3px;
+            outline: none;
+        }
+        .overlay-vol-row input[type=range]::-webkit-slider-thumb {
+            -webkit-appearance: none;
+            width: 14px; height: 14px;
+            background: #00ff88; border-radius: 50%; cursor: pointer;
+            box-shadow: 0 0 6px rgba(0,255,136,0.6);
+        }
+        .overlay-vol-row input[type=range]::-moz-range-thumb {
+            width: 14px; height: 14px;
+            background: #00ff88; border-radius: 50%;
+            border: none; cursor: pointer;
+        }
+        .overlay-vol-label { opacity: 0.8; white-space: nowrap; }
+
+        @media (max-width: 600px) and (orientation: portrait) {
+            .overlay-mobile-settings { display: flex; }
+            /* Volume-Regler in Top-Bar auf Portrait-Mobile ausblenden – sind im Overlay */
+            .volume-controls { display: none !important; }
+        }
+        @media (max-height: 500px) and (orientation: landscape) {
+            .overlay-mobile-settings { display: flex; }
+            .volume-controls { display: none !important; }
+        }
+
+        /* ===== LANDSCAPE MULTIPLAYER D-PAD (Links/Rechts) ===== */
+        @media (max-height: 500px) and (orientation: landscape) {
+            body.landscape-mp #dpad-p1-zone {
+                position: fixed;
+                left: 4px;
+                top: 50%;
+                transform: translateY(-50%);
+                z-index: 60;
+                background: rgba(0,0,0,0.35);
+                border-radius: 12px;
+                padding: 4px;
+            }
+            body.landscape-mp #dpad-p2-zone {
+                position: fixed;
+                right: 4px;
+                top: 50%;
+                transform: translateY(-50%);
+                z-index: 60;
+                background: rgba(0,0,0,0.35);
+                border-radius: 12px;
+                padding: 4px;
+                display: flex !important;
+            }
+            body.landscape-mp #dpad-wrapper {
+                /* Wrapper aus dem Flow nehmen – Zonen sind jetzt fixed */
+                position: static;
+                background: none;
+                padding: 0;
+                gap: 0;
+                height: 0;
+                overflow: visible;
+            }
+            body.landscape-mp .game-container {
+                /* Canvas verschmälern damit D-Pads nicht überlappen */
+                width: min(calc(100vw - 320px), calc((100dvh - 46px - 32px) * 4 / 3));
+            }
+        }
+        .volume-controls {
+            display: flex;
+            gap: 15px;
+            align-items: center;
+            margin-top: 8px;
+            padding: 8px 12px;
+            background: rgba(0, 0, 0, 0.3);
+            border-radius: 6px;
+        }
+
+        .volume-controls label {
+            font-size: 12px;
+            font-weight: bold;
+            color: #fff;
+            text-shadow: 0 1px 2px rgba(0,0,0,0.5);
+        }
+
+        .volume-controls input[type="range"] {
+            width: 100px;
+            height: 6px;
+            -webkit-appearance: none;
+            background: rgba(255, 255, 255, 0.3);
+            border-radius: 3px;
+            outline: none;
+        }
+
+        .volume-controls input[type="range"]::-webkit-slider-thumb {
+            -webkit-appearance: none;
+            width: 14px;
+            height: 14px;
+            background: #00ff88;
+            border-radius: 50%;
+            cursor: pointer;
+            box-shadow: 0 0 8px rgba(0, 255, 136, 0.6);
+        }
+
+        .volume-controls input[type="range"]::-moz-range-thumb {
+            width: 14px;
+            height: 14px;
+            background: #00ff88;
+            border-radius: 50%;
+            cursor: pointer;
+            border: none;
+        }
+
+        .volume-controls input[type="range"]:hover::-webkit-slider-thumb {
+            background: #33ff99;
+            box-shadow: 0 0 12px rgba(0, 255, 136, 0.8);
+        }
+
+        .volume-controls span {
+            font-size: 12px;
+            color: #fff;
+            text-shadow: 0 1px 2px rgba(0,0,0,0.5);
+            width: 35px;
+            display: inline-block;
+        }
+
+        /* Responsive für mobile Geräte */
+        @media (max-width: 600px) {
+            .volume-controls {
+                flex-wrap: wrap;
+                gap: 12px;
+                padding: 6px 8px;
+            }
+
+            .volume-controls input[type="range"] {
+                width: 80px;
+            }
+        }
     </style>
 </head>
 <body data-theme="cyberpunk">
@@ -625,6 +816,16 @@
                 <option value="vaporwave">Vaporwave</option>
                 <option value="darkforest">Dark Forest</option>
             </select>
+        </div>
+        <!-- Lautstärkeregler -->
+        <div class="volume-controls" style="display:flex; gap:15px; align-items:center;">
+            <label style="font-size:12px; font-weight:bold;">🔊 SFX:</label>
+            <input type="range" id="sfxVolume" min="0" max="100" value="80" oninput="setSFXVolume(this.value)">
+            <span id="sfxVolumeVal" style="font-size:12px; width:35px;">80%</span>
+            
+            <label style="font-size:12px; font-weight:bold;">🎵 MUSIK:</label>
+            <input type="range" id="musicVolume" min="0" max="100" value="70" oninput="setMusicVolume(this.value)">
+            <span id="musicVolumeVal" style="font-size:12px; width:35px;">70%</span>
         </div>
     </div>
 
@@ -652,14 +853,46 @@
                     <button class="mode-btn" id="btnMulti" onclick="setMode('multi')">2 SPIELER</button>
                 </div>
 
+                <!-- Mobile-only: Style & Lautstärke im Overlay (Top-Bar nicht erreichbar) -->
+                <div class="overlay-mobile-settings">
+                    <div class="overlay-style-row">
+                        <span class="overlay-vol-label">STYLE:</span>
+                        <select id="themeSelectOverlay" onchange="changeTheme(this.value)">
+                            <option value="cyberpunk">Neon Cyberpunk</option>
+                            <option value="retro">Classic 3310</option>
+                            <option value="ocean">Deep Sea</option>
+                            <option value="inferno">Inferno Blood</option>
+                            <option value="pvz">Plants vs Zombies</option>
+                            <option value="matrix">Matrix Code</option>
+                            <option value="vaporwave">Vaporwave</option>
+                            <option value="darkforest">Dark Forest</option>
+                        </select>
+                    </div>
+                    <div class="overlay-vol-row">
+                        <span class="overlay-vol-label">🔊</span>
+                        <input type="range" id="sfxVolumeOverlay" min="0" max="100" value="80" oninput="setSFXVolume(this.value)">
+                        <span id="sfxVolOverlayVal" class="overlay-vol-label">80%</span>
+                        <span class="overlay-vol-label" style="margin-left:6px;">🎵</span>
+                        <input type="range" id="musicVolumeOverlay" min="0" max="100" value="70" oninput="setMusicVolume(this.value)">
+                        <span id="musVolOverlayVal" class="overlay-vol-label">70%</span>
+                    </div>
+                </div>
+
+                <!-- Sound Toggle Buttons -->
+                <div style="display:flex; gap:8px; justify-content:center; margin-bottom:10px;">
+                    <button class="action-btn addon-btn" id="btn-sfx-toggle" onclick="toggleSFX()" style="opacity:1;">🔊 SFX</button>
+                    <button class="action-btn addon-btn" id="btn-music-toggle" onclick="toggleMusic()" style="opacity:1;">🎵 MUSIK</button>
+                </div>
+
                 <div class="menu-grids">
                     <div class="diff-buttons">
                         <div class="menu-col-title">GESCHWINDIGKEIT</div>
-                        <button class="action-btn" id="btn-easy"      onclick="setDifficulty('easy')">LEICHT</button>
-                        <button class="action-btn" id="btn-medium"    onclick="setDifficulty('medium')">MITTEL</button>
-                        <button class="action-btn" id="btn-fast"      onclick="setDifficulty('fast')">SCHNELL</button>
-                        <button class="action-btn" id="btn-ultra"     onclick="setDifficulty('ultra')">ULTRA</button>
-                        <button class="action-btn btn-nightmare" id="btn-nightmare" onclick="setDifficulty('nightmare')">ALBTRAUM</button>
+                        <button class="action-btn" id="btn-easy"      onclick="setDifficulty('easy')">LEICHT (175ms)</button>
+                        <button class="action-btn" id="btn-slow"     onclick="setDifficulty('slow')">LANGSAM (125ms)</button>
+                        <button class="action-btn" id="btn-medium"    onclick="setDifficulty('medium')">MITTEL (100ms)</button>
+                        <button class="action-btn" id="btn-quick"    onclick="setDifficulty('quick')">SCHNELL (70ms)</button>
+                        <button class="action-btn" id="btn-ultra"     onclick="setDifficulty('ultra')">ULTRA (45ms)</button>
+                        <button class="action-btn btn-nightmare" id="btn-nightmare" onclick="setDifficulty('nightmare')">ALBTRAUM (35ms)</button>
                     </div>
                     <div class="addon-buttons">
                         <div class="menu-col-title">ADDONS (Toggles)</div>
@@ -674,7 +907,7 @@
 
                 <p class="legend" id="keyboardLegend">
                     [↑/↓] Tempo | [1,2,3,4] Addons | [ALT GR] 1/2 Spieler | [+/-] Style<br>
-                    [LEERTASTE] = Spiel Starten
+                    [LEERTASTE] = Spiel Starten | [M] Mute | [S] SFX | [U] Musik<br>
                 </p>
             </div>
 
@@ -743,6 +976,578 @@
     </div>
 
     <script>
+        /* ═══════════════════════════════════════════════════════════════
+           SOUND ENGINE (8-Bit Synth via Web Audio API)
+           ────────────────────────────────────────────────────────────── */
+        
+        // Sound State
+        let audioCtx = null;
+        let isMuted = false;
+        let musicEnabled = true;
+        let sfxEnabled = true;
+        let musicVolume = 0.7;   // 0-1 (default 70%)
+        let sfxVolume = 0.8;     // 0-1 (default 80%)
+        let musicOscillators = [];
+        let musicInterval = null;
+        let currentMode = 'normal'; // 'normal' oder 'nightmare'
+
+        // Lautstärkeregler Funktionen
+        function setSFXVolume(val) {
+            sfxVolume = val / 100;
+            const pct = Math.round(val) + '%';
+            const mainVal = document.getElementById('sfxVolumeVal');
+            const ovSlider = document.getElementById('sfxVolumeOverlay');
+            const ovVal    = document.getElementById('sfxVolOverlayVal');
+            const mainSlider = document.getElementById('sfxVolume');
+            if (mainVal)   mainVal.textContent  = pct;
+            if (ovVal)     ovVal.textContent     = pct;
+            if (ovSlider)  ovSlider.value        = Math.round(val);
+            if (mainSlider) mainSlider.value     = Math.round(val);
+        }
+
+        function setMusicVolume(val) {
+            musicVolume = val / 100;
+            const pct = Math.round(val) + '%';
+            const mainVal = document.getElementById('musicVolumeVal');
+            const ovSlider = document.getElementById('musicVolumeOverlay');
+            const ovVal    = document.getElementById('musVolOverlayVal');
+            const mainSlider = document.getElementById('musicVolume');
+            if (mainVal)   mainVal.textContent  = pct;
+            if (ovVal)     ovVal.textContent     = pct;
+            if (ovSlider)  ovSlider.value        = Math.round(val);
+            if (mainSlider) mainSlider.value     = Math.round(val);
+        }
+
+        function loadSavedVolumes() {
+            const savedSfx   = localStorage.getItem('snake_sfx_volume');
+            const savedMusic = localStorage.getItem('snake_music_volume');
+            if (savedSfx !== null) {
+                sfxVolume = parseFloat(savedSfx);
+                setSFXVolume(Math.round(sfxVolume * 100));
+            }
+            if (savedMusic !== null) {
+                musicVolume = parseFloat(savedMusic);
+                setMusicVolume(Math.round(musicVolume * 100));
+            }
+        }
+
+        function saveVolumes() {
+            localStorage.setItem('snake_sfx_volume', sfxVolume.toFixed(2));
+            localStorage.setItem('snake_music_volume', musicVolume.toFixed(2));
+        }
+        
+        // 8-Bit Synth Helper Functions
+        function initAudio() {
+            if (!audioCtx) {
+                audioCtx = new (window.AudioContext || window.webkitAudioContext)();
+            }
+            // Gibt Promise zurück – resolved wenn Context wirklich läuft
+            return audioCtx.resume();
+        }
+
+        // 8-Bit Square Wave (NES-style) - Normal Mode
+        function playSquare(freq, duration, volume = 0.1, slide = 0) {
+            if (!sfxEnabled || isMuted || !audioCtx) return;
+            
+            const osc = audioCtx.createOscillator();
+            const gain = audioCtx.createGain();
+            
+            osc.type = 'square';
+            osc.frequency.setValueAtTime(freq, audioCtx.currentTime);
+            if (slide !== 0) {
+                osc.frequency.exponentialRampToValueAtTime(
+                    freq + slide,
+                    audioCtx.currentTime + duration
+                );
+            }
+            
+            // Apply SFX volume slider
+            const finalVolume = Math.min(volume * sfxVolume, 1);
+            gain.gain.setValueAtTime(finalVolume, audioCtx.currentTime);
+            gain.gain.exponentialRampToValueAtTime(
+                0.01,
+                audioCtx.currentTime + duration
+            );
+            
+            osc.connect(gain);
+            gain.connect(audioCtx.destination);
+            
+            osc.start();
+            osc.stop(audioCtx.currentTime + duration);
+        }
+        
+        // 8-Bit Square Wave - Nightmare Mode (darker, lower)
+        function playSquareNightmare(freq, duration, volume = 0.15, slide = 0) {
+            if (!sfxEnabled || isMuted || !audioCtx) return;
+            
+            const osc = audioCtx.createOscillator();
+            const gain = audioCtx.createGain();
+            
+            osc.type = 'square';
+            osc.frequency.setValueAtTime(freq, audioCtx.currentTime);
+            if (slide !== 0) {
+                osc.frequency.exponentialRampToValueAtTime(
+                    freq + slide,
+                    audioCtx.currentTime + duration
+                );
+            }
+            
+            // Apply SFX volume slider
+            const finalVolume = Math.min(volume * sfxVolume, 1);
+            gain.gain.setValueAtTime(finalVolume, audioCtx.currentTime);
+            gain.gain.exponentialRampToValueAtTime(
+                0.01,
+                audioCtx.currentTime + duration
+            );
+            
+            osc.connect(gain);
+            gain.connect(audioCtx.destination);
+            
+            osc.start();
+            osc.stop(audioCtx.currentTime + duration);
+        }
+        
+        // 8-Bit Sawtooth Wave (more aggressive) - Normal Mode
+        function playSaw(freq, duration, volume = 0.15) {
+            if (!sfxEnabled || isMuted || !audioCtx) return;
+            
+            const osc = audioCtx.createOscillator();
+            const gain = audioCtx.createGain();
+            
+            osc.type = 'sawtooth';
+            osc.frequency.setValueAtTime(freq, audioCtx.currentTime);
+            
+            // Apply SFX volume slider
+            const finalVolume = Math.min(volume * sfxVolume, 1);
+            gain.gain.setValueAtTime(finalVolume, audioCtx.currentTime);
+            gain.gain.exponentialRampToValueAtTime(
+                0.01,
+                audioCtx.currentTime + duration
+            );
+            
+            osc.connect(gain);
+            gain.connect(audioCtx.destination);
+            
+            osc.start();
+            osc.stop(audioCtx.currentTime + duration);
+        }
+        
+        // 8-Bit Sawtooth Wave - Nightmare Mode (deeper)
+        function playSawNightmare(freq, duration, volume = 0.2) {
+            if (!sfxEnabled || isMuted || !audioCtx) return;
+            
+            const osc = audioCtx.createOscillator();
+            const gain = audioCtx.createGain();
+            
+            osc.type = 'sawtooth';
+            osc.frequency.setValueAtTime(freq, audioCtx.currentTime);
+            
+            // Apply SFX volume slider
+            const finalVolume = Math.min(volume * sfxVolume, 1);
+            gain.gain.setValueAtTime(finalVolume, audioCtx.currentTime);
+            gain.gain.exponentialRampToValueAtTime(
+                0.01,
+                audioCtx.currentTime + duration
+            );
+            
+            osc.connect(gain);
+            gain.connect(audioCtx.destination);
+            
+            osc.start();
+            osc.stop(audioCtx.currentTime + duration);
+        }
+        
+        // 8-Bit Noise (for explosions/crashes) - Normal Mode
+        function playNoise(duration = 0.1, volume = 0.2) {
+            if (!sfxEnabled || isMuted || !audioCtx) return;
+            
+            const bufferSize = audioCtx.sampleRate * duration;
+            const buffer = audioCtx.createBuffer(1, bufferSize, audioCtx.sampleRate);
+            const data = buffer.getChannelData(0);
+            
+            for (let i = 0; i < bufferSize; i++) {
+                data[i] = Math.random() * 2 - 1;
+            }
+            
+            const noise = audioCtx.createBufferSource();
+            const gain = audioCtx.createGain();
+            
+            noise.buffer = buffer;
+            // Apply SFX volume slider
+            const finalVolume = Math.min(volume * sfxVolume, 1);
+            gain.gain.setValueAtTime(finalVolume, audioCtx.currentTime);
+            gain.gain.exponentialRampToValueAtTime(
+                0.01,
+                audioCtx.currentTime + duration
+            );
+            
+            noise.connect(gain);
+            gain.connect(audioCtx.destination);
+            
+            noise.start();
+        }
+        
+        // 8-Bit Noise - Nightmare Mode (heavier)
+        function playNoiseNightmare(duration = 0.2, volume = 0.35) {
+            if (!sfxEnabled || isMuted || !audioCtx) return;
+            
+            const bufferSize = audioCtx.sampleRate * duration;
+            const buffer = audioCtx.createBuffer(1, bufferSize, audioCtx.sampleRate);
+            const data = buffer.getChannelData(0);
+            
+            for (let i = 0; i < bufferSize; i++) {
+                data[i] = Math.random() * 2 - 1;
+            }
+            
+            const noise = audioCtx.createBufferSource();
+            const gain = audioCtx.createGain();
+            
+            noise.buffer = buffer;
+            // Apply SFX volume slider
+            const finalVolume = Math.min(volume * sfxVolume, 1);
+            gain.gain.setValueAtTime(finalVolume, audioCtx.currentTime);
+            gain.gain.exponentialRampToValueAtTime(
+                0.01,
+                audioCtx.currentTime + duration
+            );
+            
+            noise.connect(gain);
+            gain.connect(audioCtx.destination);
+            
+            noise.start();
+        }
+        
+        // 8-Bit Triangle Wave (softer sounds) - Normal Mode
+        function playTriangle(freq, duration, volume = 0.1) {
+            if (!sfxEnabled || isMuted || !audioCtx) return;
+            
+            const osc = audioCtx.createOscillator();
+            const gain = audioCtx.createGain();
+            
+            osc.type = 'triangle';
+            osc.frequency.setValueAtTime(freq, audioCtx.currentTime);
+            
+            // Apply SFX volume slider
+            const finalVolume = Math.min(volume * sfxVolume, 1);
+            gain.gain.setValueAtTime(finalVolume, audioCtx.currentTime);
+            gain.gain.exponentialRampToValueAtTime(
+                0.01,
+                audioCtx.currentTime + duration
+            );
+            
+            osc.connect(gain);
+            gain.connect(audioCtx.destination);
+            
+            osc.start();
+            osc.stop(audioCtx.currentTime + duration);
+        }
+        
+        // 8-Bit Triangle Wave - Nightmare Mode (darker)
+        function playTriangleNightmare(freq, duration, volume = 0.12) {
+            if (!sfxEnabled || isMuted || !audioCtx) return;
+            
+            const osc = audioCtx.createOscillator();
+            const gain = audioCtx.createGain();
+            
+            osc.type = 'triangle';
+            osc.frequency.setValueAtTime(freq, audioCtx.currentTime);
+            
+            // Apply SFX volume slider
+            const finalVolume = Math.min(volume * sfxVolume, 1);
+            gain.gain.setValueAtTime(finalVolume, audioCtx.currentTime);
+            gain.gain.exponentialRampToValueAtTime(
+                0.01,
+                audioCtx.currentTime + duration
+            );
+            
+            osc.connect(gain);
+            gain.connect(audioCtx.destination);
+            
+            osc.start();
+            osc.stop(audioCtx.currentTime + duration);
+        }
+        
+        // 8-Bit Music: Simple arpeggio pattern (C major scale) - Normal Mode
+        const musicNotes = [
+            { freq: 261.63, dur: 0.15 },   // C4
+            { freq: 311.13, dur: 0.15 },   // D4
+            { freq: 392.00, dur: 0.15 },   // E4
+            { freq: 523.25, dur: 0.15 },   // C5
+            { freq: 392.00, dur: 0.15 },   // E4
+            { freq: 349.23, dur: 0.15 },   // D4
+            { freq: 311.13, dur: 0.15 },   // D4
+            { freq: 261.63, dur: 0.30 }    // C4 (longer)
+        ];
+        
+        function playMusicNote(freq, duration = 0.15, volume = 0.03) {
+            if (!musicEnabled || isMuted || !audioCtx) return;
+            
+            const osc = audioCtx.createOscillator();
+            const gain = audioCtx.createGain();
+            
+            // Detune for richer sound
+            osc.type = 'square';
+            osc.frequency.value = freq;
+            osc.detune.value = (Math.random() - 0.5) * 10;
+            
+            // Apply music volume slider
+            const finalVolume = Math.min(volume * musicVolume, 1);
+            gain.gain.setValueAtTime(finalVolume, audioCtx.currentTime);
+            gain.gain.exponentialRampToValueAtTime(
+                0.001,
+                audioCtx.currentTime + duration
+            );
+            
+            osc.connect(gain);
+            gain.connect(audioCtx.destination);
+            
+            osc.start();
+            osc.stop(audioCtx.currentTime + duration);
+        }
+        
+        // Music Sequencer - Nightmare Mode (darker, slower)
+        const nightmareMusicNotes = [
+            { freq: 196.00, dur: 0.25 },   // A3 (darker)
+            { freq: 246.94, dur: 0.25 },   // Bb3
+            { freq: 311.13, dur: 0.25 },   // D4
+            { freq: 415.30, dur: 0.25 },   // F#4
+            { freq: 311.13, dur: 0.25 },   // D4
+            { freq: 261.63, dur: 0.30 }    // C4 (longer)
+        ];
+        
+        function startMusic() {
+            if (!musicEnabled || isMuted || !audioCtx) return;
+            
+            // Stop existing music before starting new sequence
+            if (musicInterval) { clearInterval(musicInterval); musicInterval = null; }
+            musicOscillators = [];
+            
+            // Sicherstellen dass Context wirklich läuft bevor Notes erstellt werden
+            audioCtx.resume().then(() => {
+                if (!musicEnabled || isMuted) return;
+                let noteIndex = 0;
+                const tempo = currentMode === 'nightmare' ? 100 : 120;
+                musicInterval = setInterval(() => {
+                    if (!musicEnabled || isMuted) return;
+                    const note = (currentMode === 'nightmare') ? nightmareMusicNotes[noteIndex] : musicNotes[noteIndex];
+                    playMusicNote(note.freq, note.dur);
+                    noteIndex = (noteIndex + 1) % ((currentMode === 'nightmare') ? nightmareMusicNotes.length : musicNotes.length);
+                }, (60000 / tempo) * 2);
+            });
+        }
+        
+        function stopMusic() {
+            if (musicInterval) { clearInterval(musicInterval); musicInterval = null; }
+            musicOscillators = [];
+        }
+        
+        // Sound Effects Functions - Normal Mode
+        function playSoundStart() {
+            initAudio();
+            // Rising arpeggio for start
+            [261.63, 329.63, 392.00, 523.25].forEach((freq, i) => {
+                setTimeout(() => playSquare(freq, 0.1, 0.08, 100), i * 80);
+            });
+        }
+        
+        function playSoundEat() {
+            if (!sfxEnabled || isMuted) return;
+            // Quick ascending beep - Normal Mode
+            [440, 523, 659].forEach((freq, i) => {
+                setTimeout(() => playSquare(freq, 0.08, 0.05), i * 40);
+            });
+        }
+        
+        function playSoundPoison() {
+            if (!sfxEnabled || isMuted) return;
+            // Descending dissonant sound - Normal Mode
+            [659, 523, 392].forEach((freq, i) => {
+                setTimeout(() => playSquare(freq, 0.1, 0.08, -100), i * 60);
+            });
+        }
+        
+        function playSoundCrash() {
+            if (!sfxEnabled || isMuted) return;
+            // Noise burst + low frequency thud - Normal Mode
+            playNoise(0.3, 0.4);
+            setTimeout(() => playSaw(100, 0.2, 0.2), 50);
+        }
+        
+        function playSoundGameOver() {
+            if (!sfxEnabled || isMuted) return;
+            // Sad descending melody - Normal Mode
+            [523.25, 493.88, 440, 392, 349.23, 261.63].forEach((freq, i) => {
+                setTimeout(() => playSquare(freq, 0.15, 0.06), i * 150);
+            });
+        }
+        
+        function playSoundPause() {
+            if (!sfxEnabled || isMuted) return;
+            // Simple chime - Normal Mode
+            playTriangle(440, 0.3, 0.08);
+            setTimeout(() => playTriangle(523.25, 0.3, 0.08), 150);
+        }
+        
+        function playSoundResume() {
+            if (!sfxEnabled || isMuted) return;
+            // Ascending chime - Normal Mode
+            [440, 523.25].forEach((freq, i) => {
+                setTimeout(() => playTriangle(freq, 0.2, 0.06), i * 100);
+            });
+        }
+        
+        // Sound Effects Functions - Nightmare Mode (darker, more intense)
+        function playSoundEatNightmare() {
+            if (!sfxEnabled || isMuted) return;
+            // Quick ascending beep - Nightmare Mode (lower pitch)
+            [293.66, 349.23, 415.30].forEach((freq, i) => {
+                setTimeout(() => playSquareNightmare(freq, 0.08, 0.08), i * 40);
+            });
+        }
+        
+        function playSoundCrashNightmare() {
+            if (!sfxEnabled || isMuted) return;
+            // Heavier noise burst - Nightmare Mode
+            playNoiseNightmare(0.3, 0.5);
+            setTimeout(() => playSawNightmare(80, 0.4, 0.3), 30);
+        }
+        
+        function playSoundGameOverNightmare() {
+            if (!sfxEnabled || isMuted) return;
+            // More intense descending melody - Nightmare Mode
+            [523.25, 493.88, 440, 392, 349.23, 261.63, 233.08].forEach((freq, i) => {
+                setTimeout(() => playSquareNightmare(freq, 0.15, 0.08), i * 120);
+            });
+        }
+        
+        function playSoundHunger() {
+            if (!sfxEnabled || isMuted) return;
+            // Low warning sound when hunger runs out - Normal Mode
+            playTriangle(150, 0.15, 0.08);
+        }
+        
+        function playSoundHungerNightmare() {
+            if (!sfxEnabled || isMuted) return;
+            // Deeper warning sound when hunger runs out - Nightmare Mode
+            playTriangleNightmare(120, 0.15, 0.1);
+        }
+
+        function toggleMute() {
+            isMuted = !isMuted;
+            updateSoundButtons();
+            if (audioCtx && audioCtx.state === 'suspended') {
+                audioCtx.resume();
+            }
+        }
+
+        // Toggle SFX on/off
+        function toggleSFX() {
+            sfxEnabled = !sfxEnabled;
+            updateSoundButtons();
+            
+            // Feedback sound when toggling (uses current volume)
+            if (sfxEnabled && !isMuted) {
+                playSquare(440, 0.1, 0.05 * sfxVolume);
+                setTimeout(() => playSquare(523.25, 0.1, 0.05 * sfxVolume), 60);
+            } else if (!sfxEnabled && !isMuted) {
+                playNoise(0.1, 0.1 * sfxVolume);
+            }
+        }
+
+        // Toggle Music on/off
+        function toggleMusic() {
+            musicEnabled = !musicEnabled;
+            updateSoundButtons();
+            
+            if (musicEnabled && !isMuted) {
+                startMusic();
+                // Start sound feedback
+                playTriangle(523.25, 0.1, 0.08 * sfxVolume);
+            } else {
+                stopMusic();
+                // Stop sound feedback
+                playNoise(0.1, 0.1 * sfxVolume);
+            }
+        }
+
+        // Update button states based on audio settings
+        function updateSoundButtons() {
+            const sfxBtn = document.getElementById('btn-sfx-toggle');
+            const musicBtn = document.getElementById('btn-music-toggle');
+            
+            if (sfxBtn) {
+                sfxBtn.classList.toggle('active', !isMuted && sfxEnabled);
+                sfxBtn.textContent = isMuted ? '🔇 SFX' : (sfxEnabled ? '🔊 SFX' : '⏸ SFX');
+            }
+            
+            if (musicBtn) {
+                musicBtn.classList.toggle('active', !isMuted && musicEnabled);
+                musicBtn.textContent = isMuted ? '🔇 MUSIK' : (musicEnabled ? '🎵 MUSIK' : '⏸ MUSIK');
+            }
+        }
+
+        // Lade gespeicherte Audio-Einstellungen beim Start
+        function loadAudioSettings() {
+            const savedMusic = localStorage.getItem('snake_music_enabled');
+            const savedSfx = localStorage.getItem('snake_sfx_enabled');
+            const savedMuted = localStorage.getItem('snake_is_muted');
+            
+            if (savedMusic !== null) musicEnabled = savedMusic === 'true';
+            if (savedSfx !== null) sfxEnabled = savedSfx === 'true';
+            if (savedMuted !== null) isMuted = savedMuted === 'true';
+            
+            updateSoundButtons();
+        }
+
+        // Speichere Audio-Einstellungen beim Verlassen des Menüs
+        function saveAudioSettings() {
+            localStorage.setItem('snake_music_enabled', musicEnabled);
+            localStorage.setItem('snake_sfx_enabled', sfxEnabled);
+            localStorage.setItem('snake_is_muted', isMuted);
+            saveVolumes();
+        }
+
+        // Toggle Mute/SFX/Music via keyboard
+        document.addEventListener('keydown', (event) => {
+            const key = event.key.toLowerCase();
+
+            // [M] toggles mute
+            if (key === 'm' && gameState !== 'PLAYING') {
+                toggleMute();
+            }
+            // [S] toggles SFX
+            else if (key === 's' && gameState !== 'PLAYING') {
+                toggleSFX();
+            }
+            // [U] toggles Music
+            else if (key === 'u' && gameState !== 'PLAYING') {
+                toggleMusic();
+            }
+        });
+
+        // Menu Sound Effects
+        function playMenuSound() {
+            if (!sfxEnabled || isMuted) return;
+            playSquare(440, 0.1, 0.05);
+            setTimeout(() => playSquare(523.25, 0.1, 0.05), 60);
+        }
+
+        function playMenuSoundSelect() {
+            if (!sfxEnabled || isMuted) return;
+            playTriangle(493.88, 0.15, 0.08);
+        }
+
+        function playMenuSoundNightmare() {
+            if (!sfxEnabled || isMuted) return;
+            playSquareNightmare(261.63, 0.15, 0.1);
+            setTimeout(() => playSquareNightmare(349.23, 0.15, 0.1), 80);
+        }
+
+        function playMenuSoundSelectNightmare() {
+            if (!sfxEnabled || isMuted) return;
+            playTriangleNightmare(293.66, 0.15, 0.1);
+        }
+        
         const canvas = document.getElementById('gameCanvas');
         const ctx    = canvas.getContext('2d');
         const TILE_SIZE = 20;
@@ -771,7 +1576,7 @@
         let isMultiplayer = false;
 
         let currentDifficulty = 'medium';
-        const difficultiesList = ['easy', 'medium', 'fast', 'ultra', 'nightmare'];
+        const difficultiesList = ['easy', 'slow', 'medium', 'quick', 'ultra', 'nightmare'];
         let currentTheme = 'cyberpunk';
         const themesList = ['cyberpunk', 'retro', 'ocean', 'inferno', 'pvz', 'matrix', 'vaporwave', 'darkforest'];
 
@@ -834,14 +1639,18 @@
             const label1  = document.getElementById('dpad-label-p1');
             if (!wrapper) return;
 
-            const isTouch  = window.matchMedia('(pointer: coarse)').matches;
-            const show     = isTouch && gameState === 'PLAYING';
+            const isTouch     = window.matchMedia('(pointer: coarse)').matches;
+            const isLandscape = window.matchMedia('(max-height: 500px) and (orientation: landscape)').matches;
+            const show        = isTouch && gameState === 'PLAYING';
 
-            wrapper.classList.toggle('visible', show);
+            wrapper.classList.toggle('visible',     show);
             wrapper.classList.toggle('multiplayer', show && isMultiplayer);
 
-            if (p2Zone)  p2Zone.style.display  = (show && isMultiplayer) ? 'flex' : 'none';
-            if (label1)  label1.style.display   = isMultiplayer ? 'block' : 'none';
+            if (p2Zone) p2Zone.style.display = (show && isMultiplayer) ? 'flex' : 'none';
+            if (label1) label1.style.display  = isMultiplayer ? 'block' : 'none';
+
+            // Landscape + Multiplayer → D-Pads seitlich, Canvas verschmälert
+            document.body.classList.toggle('landscape-mp', show && isMultiplayer && isLandscape);
         }
 
         // ── MAIDEN SPIRAL ─────────────────────────────────────────────────
@@ -868,6 +1677,10 @@
         function changeTheme(themeName) {
             currentTheme = themeName;
             document.body.setAttribute('data-theme', themeName);
+            const sel   = document.getElementById('themeSelect');
+            const selOv = document.getElementById('themeSelectOverlay');
+            if (sel)   sel.value   = themeName;
+            if (selOv) selOv.value = themeName;
             if (!rafId) draw();
         }
 
@@ -883,12 +1696,22 @@
         function setDifficulty(diff) {
             currentDifficulty = diff;
             updateMenuSelection();
+            
+            // Play menu sound based on mode
+            if (diff === 'nightmare') {
+                playMenuSoundNightmare();
+            } else {
+                playMenuSoundSelect();
+            }
         }
 
         function toggleAddon(addon) {
             if (currentDifficulty === 'nightmare') return;
             userAddons[addon] = !userAddons[addon];
             updateMenuSelection();
+            
+            // Play menu sound for addon toggle
+            playMenuSoundSelect();
         }
 
         function updateMenuSelection() {
@@ -972,9 +1795,11 @@
             updateDpad();
 
             if (currentDifficulty === 'nightmare') {
-                activeAddons = { obstacles: true, hunger: true, maiden: true, poison: true };
+                activeAddons  = { obstacles: true, hunger: true, maiden: true, poison: true };
+                currentMode   = 'nightmare';
             } else {
                 activeAddons = { ...userAddons };
+                currentMode  = 'normal';
             }
 
             document.getElementById('ht1').style.display = activeAddons.hunger ? 'block' : 'none';
@@ -984,9 +1809,10 @@
 
             gameSpeed = 100;
             switch (currentDifficulty) {
-                case 'easy':      gameSpeed = 150; break;
+                case 'easy':      gameSpeed = 175; break;
+                case 'slow':      gameSpeed = 125; break;
                 case 'medium':    gameSpeed = 100; break;
-                case 'fast':      gameSpeed =  70; break;
+                case 'quick':     gameSpeed =  70; break;
                 case 'ultra':     gameSpeed =  45; break;
                 case 'nightmare':
                     gameSpeed = 35;
@@ -1005,15 +1831,28 @@
 
             stopLoop();
             lastFrameTime = 0;
+
+            // AudioContext erst vollständig resumt, dann Musik + SFX starten
+            initAudio().then(() => {
+                playSoundStart();
+                startMusic();
+            });
+
             rafId = requestAnimationFrame(runLoop);
         }
 
         function showMenu() {
             stopLoop();
+            stopMusic();
             gameState = 'MENU';
+            
+            // Speichere Audio-Einstellungen beim Verlassen des Spiels
+            saveAudioSettings();
+            
             document.getElementById('gameOver').style.display    = 'none';
             document.getElementById('pauseOverlay').style.display = 'none';
             document.getElementById('mainMenu').style.display    = 'flex';
+            updateSoundButtons(); // Update button states for menu display
             updateMenuSelection();
             updateDpad();
             draw();
@@ -1024,12 +1863,14 @@
             if (gameState !== 'PLAYING') return;
             gameState = 'PAUSED';
             stopLoop();
+            playSoundPause();
             document.getElementById('pauseOverlay').style.display = 'flex';
             draw(); // render frozen frame
         }
 
         function resumeGame() {
             if (gameState !== 'PAUSED') return;
+            playSoundResume();
             document.getElementById('pauseOverlay').style.display = 'none';
             gameState     = 'PLAYING';
             lastFrameTime = 0;
@@ -1072,6 +1913,7 @@
                 snake.score += 10;
                 snake.foodEaten++;
                 ateFood = true;
+                playSoundEat();
                 snake.hungerTicks = -graceTicks;
                 spawnFood();
                 if (activeAddons.obstacles && snake.foodEaten % 3 === 0) spawnObstacle();
@@ -1080,6 +1922,7 @@
             }
             // Poison food
             else if (activeAddons.poison && poisonFood && head.x === poisonFood.x && head.y === poisonFood.y) {
+                playSoundPoison();
                 applyPoisonEffect(snake);
                 poisonFood = null;
                 ateFood = true;
@@ -1111,25 +1954,50 @@
             [p1, p2].forEach(snake => {
                 if (snake.dead) return;
                 const head = snake.body[0];
-                if (head.x < 0 || head.x >= COLS || head.y < 0 || head.y >= ROWS) snake.dead = true;
-                for (let i = 1; i < snake.body.length; i++) {
-                    if (head.x === snake.body[i].x && head.y === snake.body[i].y) snake.dead = true;
+                if (head.x < 0 || head.x >= COLS || head.y < 0 || head.y >= ROWS) {
+                    playSoundCrash();
+                    snake.dead = true;
                 }
-                if (activeAddons.obstacles && obstacles.some(o => o.x === head.x && o.y === head.y)) snake.dead = true;
-                if (activeAddons.maiden) {
-                    for (let i = 0; i < maidenProgress; i++) {
-                        if (maidenSpiral[i].x === head.x && maidenSpiral[i].y === head.y) snake.dead = true;
+                for (let i = 1; i < snake.body.length; i++) {
+                    if (head.x === snake.body[i].x && head.y === snake.body[i].y) {
+                        playSoundCrash();
+                        snake.dead = true;
                     }
                 }
-                if (hunter.active && head.x === hunter.x && head.y === hunter.y) snake.dead = true;
+                if (activeAddons.obstacles && obstacles.some(o => o.x === head.x && o.y === head.y)) {
+                    playSoundCrash();
+                    snake.dead = true;
+                }
+                if (activeAddons.maiden) {
+                    for (let i = 0; i < maidenProgress; i++) {
+                        if (maidenSpiral[i].x === head.x && maidenSpiral[i].y === head.y) {
+                            playSoundCrash();
+                            snake.dead = true;
+                        }
+                    }
+                }
+                if (hunter.active && head.x === hunter.x && head.y === hunter.y) {
+                    // Nightmare mode: use darker crash sound
+                    playSoundCrashNightmare();
+                    snake.dead = true;
+                }
             });
 
             if (isMultiplayer && !p1.dead && !p2.dead) {
                 const h1 = p1.body[0], h2 = p2.body[0];
-                if (h1.x === h2.x && h1.y === h2.y) { p1.dead = true; p2.dead = true; }
+                if (h1.x === h2.x && h1.y === h2.y) {
+                    playSoundCrash();
+                    p1.dead = true; p2.dead = true;
+                }
                 else {
-                    if (p2.body.some(s => s.x === h1.x && s.y === h1.y)) p1.dead = true;
-                    if (p1.body.some(s => s.x === h2.x && s.y === h2.y)) p2.dead = true;
+                    if (p2.body.some(s => s.x === h1.x && s.y === h1.y)) {
+                        playSoundCrash();
+                        p1.dead = true;
+                    }
+                    if (p1.body.some(s => s.x === h2.x && s.y === h2.y)) {
+                        playSoundCrash();
+                        p2.dead = true;
+                    }
                 }
             }
         }
@@ -1199,6 +2067,12 @@
 
         function endGame(titleText, scoreText) {
             stopLoop();
+            // Nightmare mode: use darker game over sound
+            if (currentDifficulty === 'nightmare') {
+                playSoundGameOverNightmare();
+            } else {
+                playSoundGameOver();
+            }
             gameState = 'GAMEOVER';
 
             // v0.4 FIX: Maiden-Spiral bei Spielende zurücksetzen
@@ -1275,8 +2149,9 @@
         function drawCyberpunk() {
             ctx.fillStyle = '#0a0f14';
             ctx.fillRect(0, 0, canvas.width, canvas.height);
-            ctx.strokeStyle = 'rgba(0, 243, 255, 0.05)';
-            ctx.lineWidth = 1;
+            // Erhöhte Gitterlinien-Sichtbarkeit (v0.5) - Neon-Raster
+            ctx.strokeStyle = 'rgba(0, 243, 255, 0.3)';
+            ctx.lineWidth = 2;
             ctx.beginPath();
             for (let x = 0; x < canvas.width;  x += TILE_SIZE) { ctx.moveTo(x, 0); ctx.lineTo(x, canvas.height); }
             for (let y = 0; y < canvas.height; y += TILE_SIZE) { ctx.moveTo(0, y); ctx.lineTo(canvas.width, y); }
@@ -1284,11 +2159,18 @@
             if (gameState === 'MENU') return;
 
             if (activeAddons.maiden) {
+                // Erhöhte Sichtbarkeit der Eiserne Jungfrau (v0.5) - Glow-Effekt + dickere Linien
                 ctx.fillStyle  = getComputedStyle(document.documentElement).getPropertyValue('--maiden-color').trim() || '#ff0055';
-                ctx.shadowBlur = 10; ctx.shadowColor = ctx.fillStyle;
+                ctx.shadowBlur = 15; ctx.shadowColor = ctx.fillStyle;
                 for (let i = 0; i < maidenProgress; i++) {
-                    ctx.fillRect(maidenSpiral[i].x*TILE_SIZE+2, maidenSpiral[i].y*TILE_SIZE+2, TILE_SIZE-4, TILE_SIZE-4);
+                    const mx = maidenSpiral[i].x*TILE_SIZE, my = maidenSpiral[i].y*TILE_SIZE;
+                    // Äußere Leuchte
+                    ctx.fillRect(mx-1, my-1, TILE_SIZE+2, TILE_SIZE+2);
+                    // Inneres Feld
+                    ctx.shadowBlur = 8;
+                    ctx.fillRect(mx+2, my+2, TILE_SIZE-4, TILE_SIZE-4);
                 }
+                ctx.shadowBlur = 0;
             }
             if (food.x !== -999) {
                 ctx.fillStyle   = '#ff003c'; ctx.shadowBlur = 15; ctx.shadowColor = '#ff003c';
@@ -1327,17 +2209,34 @@
         function drawRetro() {
             ctx.fillStyle = '#8bac0f';
             ctx.fillRect(0, 0, canvas.width, canvas.height);
+            // Erhöhte Gitterlinien-Sichtbarkeit (v0.5) - dickes Pixel-Raster
+            ctx.strokeStyle = 'rgba(17, 34, 17, 0.3)';
+            ctx.lineWidth = 3;
+            for (let x = 0; x < canvas.width; x += TILE_SIZE) {
+                ctx.beginPath(); ctx.moveTo(x, 0); ctx.lineTo(x, canvas.height); ctx.stroke();
+            }
+            for (let y = 0; y < canvas.height; y += TILE_SIZE) {
+                ctx.beginPath(); ctx.moveTo(0, y); ctx.lineTo(canvas.width, y); ctx.stroke();
+            }
             if (gameState === 'MENU') return;
             const pixelColor = '#112211';
             if (activeAddons.maiden) {
+                // Erhöhte Sichtbarkeit der Eiserne Jungfrau (v0.5) - dickerer Pixel-Rahmen
                 ctx.fillStyle = pixelColor;
                 for (let i = 0; i < maidenProgress; i++) {
-                    ctx.fillRect(maidenSpiral[i].x*TILE_SIZE, maidenSpiral[i].y*TILE_SIZE, TILE_SIZE, TILE_SIZE);
+                    const mx = maidenSpiral[i].x*TILE_SIZE, my = maidenSpiral[i].y*TILE_SIZE;
+                    // Äußere Block-Füllung
+                    ctx.fillRect(mx-1, my-1, TILE_SIZE+2, TILE_SIZE+2);
+                    // Inneres Pixel-Raster mit dickerem Rahmen
                     ctx.fillStyle = '#8bac0f';
-                    ctx.fillRect(maidenSpiral[i].x*TILE_SIZE+2, maidenSpiral[i].y*TILE_SIZE+2, TILE_SIZE-4, TILE_SIZE-4);
+                    ctx.fillRect(mx, my, TILE_SIZE, TILE_SIZE);
+                    ctx.strokeStyle = '#112211';
+                    ctx.lineWidth = 3;
+                    ctx.strokeRect(mx, my, TILE_SIZE, TILE_SIZE);
                     ctx.fillStyle = pixelColor;
                 }
             }
+
             if (food.x !== -999 && Math.floor(frameCount / 3) % 2 === 0) {
                 ctx.fillStyle = pixelColor;
                 ctx.fillRect(food.x*TILE_SIZE+2, food.y*TILE_SIZE+2, TILE_SIZE-4, TILE_SIZE-4);
@@ -1375,11 +2274,21 @@
             ctx.fillStyle = grad; ctx.fillRect(0, 0, canvas.width, canvas.height);
             if (gameState === 'MENU') return;
             if (activeAddons.maiden) {
-                ctx.fillStyle = '#000033';
+                // Erhöhte Sichtbarkeit der Eiserne Jungfrau (v0.5) - dunkle Blöcke mit Leuchte
+                const oceanMaidenColor = getComputedStyle(document.documentElement).getPropertyValue('--maiden-color').trim() || '#000033';
+                ctx.fillStyle = oceanMaidenColor;
                 for (let i = 0; i < maidenProgress; i++) {
-                    ctx.fillRect(maidenSpiral[i].x*TILE_SIZE, maidenSpiral[i].y*TILE_SIZE, TILE_SIZE, TILE_SIZE);
+                    const mx = maidenSpiral[i].x*TILE_SIZE, my = maidenSpiral[i].y*TILE_SIZE;
+                    // Dunkler Block mit Leuchte-Rahmen
+                    ctx.fillRect(mx-1, my-1, TILE_SIZE+2, TILE_SIZE+2);
+                    ctx.shadowBlur = 8;
+                    ctx.strokeStyle = '#00ffcc';
+                    ctx.lineWidth = 3;
+                    ctx.strokeRect(mx, my, TILE_SIZE, TILE_SIZE);
                 }
+                ctx.shadowBlur = 0;
             }
+
             if (food.x !== -999) {
                 ctx.fillStyle = '#ffcc00';
                 ctx.beginPath(); ctx.arc(food.x*TILE_SIZE+10, food.y*TILE_SIZE+10, 8, 0, Math.PI*2); ctx.fill();
@@ -1411,9 +2320,19 @@
             ctx.fillStyle = '#1a0000'; ctx.fillRect(0, 0, canvas.width, canvas.height);
             if (gameState === 'MENU') return;
             if (activeAddons.maiden) {
-                ctx.fillStyle = '#4d0000';
+                // Erhöhte Sichtbarkeit der Eiserne Jungfrau (v0.5) - gezackte Form mit Leuchte
+                const infernoMaidenColor = getComputedStyle(document.documentElement).getPropertyValue('--maiden-color').trim() || '#4d0000';
+                ctx.fillStyle = infernoMaidenColor;
                 for (let i = 0; i < maidenProgress; i++) {
                     let mx = maidenSpiral[i].x*TILE_SIZE, my = maidenSpiral[i].y*TILE_SIZE;
+                    // Leuchte-Rahmen
+                    ctx.shadowBlur = 12;
+                    ctx.strokeStyle = '#ff3300';
+                    ctx.lineWidth = 3;
+                    ctx.beginPath(); ctx.moveTo(mx+1, my+1); ctx.lineTo(mx+19, my+1); ctx.lineTo(mx+10, my+11); ctx.lineTo(mx+1, my+19); ctx.lineTo(mx+1, my+1); ctx.stroke();
+                    // Zackige Form
+                    ctx.shadowBlur = 0;
+                    ctx.fillStyle = infernoMaidenColor;
                     ctx.beginPath(); ctx.moveTo(mx, my); ctx.lineTo(mx+20, my); ctx.lineTo(mx+10, my+10); ctx.fill();
                     ctx.fillRect(mx, my+10, 20, 10);
                 }
@@ -1461,15 +2380,25 @@
             }
             if (gameState === 'MENU') return;
             if (activeAddons.maiden) {
-                ctx.fillStyle = '#8b4513'; ctx.shadowBlur = 5; ctx.shadowColor = '#8b4513';
+                // Erhöhte Sichtbarkeit der Eiserne Jungfrau (v0.5) - Zombie-Gesichter mit Leuchte
+                const pvzMaidenColor = getComputedStyle(document.documentElement).getPropertyValue('--maiden-color').trim() || '#8b4513';
+                ctx.fillStyle = pvzMaidenColor; ctx.shadowBlur = 12; ctx.shadowColor = '#ff2200';
                 for (let i = 0; i < maidenProgress; i++) {
                     let mx = maidenSpiral[i].x*TILE_SIZE, my = maidenSpiral[i].y*TILE_SIZE;
+                    // Leuchte-Rahmen
+                    ctx.strokeStyle = '#ff2200';
+                    ctx.lineWidth = 3;
+                    ctx.beginPath(); ctx.arc(mx+10, my+10, 9.5, 0, Math.PI*2); ctx.stroke();
+                    // Gesicht
+                    ctx.fillStyle = pvzMaidenColor;
                     ctx.beginPath(); ctx.arc(mx+10, my+10, 8, 0, Math.PI*2); ctx.fill();
-                    ctx.fillStyle = '#000';
-                    ctx.beginPath(); ctx.arc(mx+7, my+7, 2, 0, Math.PI*2); ctx.arc(mx+13, my+7, 2, 0, Math.PI*2); ctx.fill();
-                    ctx.fillStyle = '#8b4513';
+                    // Augen (größer und heller)
+                    ctx.fillStyle = '#fff';
+                    ctx.shadowBlur = 6;
+                    ctx.beginPath(); ctx.arc(mx+7, my+7, 3.5, 0, Math.PI*2); ctx.fill();
+                    ctx.beginPath(); ctx.arc(mx+13, my+7, 3.5, 0, Math.PI*2); ctx.fill();
+                    ctx.shadowBlur = 0;
                 }
-                ctx.shadowBlur = 0;
             }
             if (food.x !== -999) {
                 ctx.fillStyle = '#ffcc00'; ctx.shadowBlur = 10; ctx.shadowColor = '#ffcc00';
@@ -1527,12 +2456,20 @@
             ctx.fillStyle = '#000500';
             ctx.fillRect(0, 0, canvas.width, canvas.height);
 
-            ctx.strokeStyle = 'rgba(0, 255, 65, 0.04)';
-            ctx.lineWidth = 1;
+            // Erhöhte Gitterlinien-Sichtbarkeit (v0.5) - Neon-Raster
+            ctx.strokeStyle = 'rgba(0, 255, 65, 0.25)';
+            ctx.lineWidth = 2;
             ctx.beginPath();
             for (let x = 0; x < canvas.width;  x += TILE_SIZE) { ctx.moveTo(x, 0); ctx.lineTo(x, canvas.height); }
             for (let y = 0; y < canvas.height; y += TILE_SIZE) { ctx.moveTo(0, y); ctx.lineTo(canvas.width, y); }
             ctx.stroke();
+
+            // Helle horizontale Linien für Scanline-Effekt
+            ctx.strokeStyle = 'rgba(0, 255, 65, 0.1)';
+            ctx.lineWidth = 1;
+            for (let y = 0; y < canvas.height; y += TILE_SIZE) {
+                ctx.beginPath(); ctx.moveTo(0, y); ctx.lineTo(canvas.width, y); ctx.stroke();
+            }
 
             ctx.fillStyle = 'rgba(0, 255, 65, 0.015)';
             for (let y = 0; y < canvas.height; y += 4) {
@@ -1651,34 +2588,43 @@
             ctx.fillStyle = sunGrad;
             ctx.fillRect(0, 0, canvas.width, canvas.height);
 
+            // Erhöhte Gitterlinien-Sichtbarkeit (v0.5) - Perspektivgrid
             const horizon = canvas.height * 0.55;
             const vpX = canvas.width / 2;
+            ctx.lineWidth = 2;
+            
+            // Vertikale Linien (verstärkt)
+            for (let n = 0; n <= 16; n++) {
+                let x = (n / 16) * canvas.width;
+                ctx.strokeStyle = 'rgba(185, 103, 255, 0.4)';
+                ctx.beginPath(); ctx.moveTo(vpX, horizon); ctx.lineTo(x, canvas.height); ctx.stroke();
+            }
+            
+            // Horizontale Linien (verstärkt)
             ctx.lineWidth = 0.8;
-
             for (let n = 0; n <= 12; n++) {
                 let t = Math.pow(n / 12, 1.8);
                 let y = horizon + t * (canvas.height - horizon);
                 ctx.strokeStyle = `rgba(255, 113, 206, ${0.1 + t * 0.45})`;
                 ctx.beginPath(); ctx.moveTo(0, y); ctx.lineTo(canvas.width, y); ctx.stroke();
             }
-            for (let n = 0; n <= 16; n++) {
-                let x = (n / 16) * canvas.width;
-                ctx.strokeStyle = 'rgba(185, 103, 255, 0.25)';
-                ctx.beginPath(); ctx.moveTo(vpX, horizon); ctx.lineTo(x, canvas.height); ctx.stroke();
-            }
 
             if (gameState === 'MENU') return;
 
+            // Erhöhte Sichtbarkeit der Eiserne Jungfrau (v0.5) - Glow-Effekt + dickere Linien
             if (activeAddons.maiden) {
                 ctx.fillStyle = '#2a0045';
+                ctx.shadowBlur = 12;
+                ctx.strokeStyle = '#ff71ce';
                 for (let i = 0; i < maidenProgress; i++) {
-                    ctx.fillRect(maidenSpiral[i].x*TILE_SIZE, maidenSpiral[i].y*TILE_SIZE, TILE_SIZE, TILE_SIZE);
+                    const mx = maidenSpiral[i].x*TILE_SIZE, my = maidenSpiral[i].y*TILE_SIZE;
+                    // Äußere Leuchte
+                    ctx.fillRect(mx-1, my-1, TILE_SIZE+2, TILE_SIZE+2);
+                    // Inneres Feld mit Rahmen
+                    ctx.shadowBlur = 8;
+                    ctx.strokeRect(mx, my, TILE_SIZE, TILE_SIZE);
                 }
-                ctx.strokeStyle = 'rgba(185, 103, 255, 0.3)';
-                ctx.lineWidth = 1;
-                for (let i = 0; i < maidenProgress; i++) {
-                    ctx.strokeRect(maidenSpiral[i].x*TILE_SIZE+1, maidenSpiral[i].y*TILE_SIZE+1, TILE_SIZE-2, TILE_SIZE-2);
-                }
+                ctx.shadowBlur = 0;
             }
 
             if (food.x !== -999) {
@@ -1785,16 +2731,20 @@
             if (gameState === 'MENU') return;
 
             if (activeAddons.maiden) {
-                ctx.fillStyle = '#0a1a05';
+                // Erhöhte Sichtbarkeit der Eiserne Jungfrau (v0.5) - dunkle Blöcke mit dickerem Rahmen
+                const forestMaidenColor = getComputedStyle(document.documentElement).getPropertyValue('--maiden-color').trim() || '#1a2d0f';
+                ctx.fillStyle = forestMaidenColor;
                 for (let i = 0; i < maidenProgress; i++) {
-                    ctx.fillRect(maidenSpiral[i].x*TILE_SIZE, maidenSpiral[i].y*TILE_SIZE, TILE_SIZE, TILE_SIZE);
+                    const mx = maidenSpiral[i].x*TILE_SIZE, my = maidenSpiral[i].y*TILE_SIZE;
+                    ctx.fillRect(mx-1, my-1, TILE_SIZE+2, TILE_SIZE+2);
+                    ctx.shadowBlur = 8;
+                    ctx.strokeStyle = '#6aaa40';
+                    ctx.lineWidth = 3;
+                    ctx.strokeRect(mx, my, TILE_SIZE, TILE_SIZE);
                 }
-                ctx.strokeStyle = 'rgba(40, 80, 20, 0.3)';
-                ctx.lineWidth = 1;
-                for (let i = 0; i < maidenProgress; i++) {
-                    ctx.strokeRect(maidenSpiral[i].x*TILE_SIZE+1, maidenSpiral[i].y*TILE_SIZE+1, TILE_SIZE-2, TILE_SIZE-2);
-                }
+                ctx.shadowBlur = 0;
             }
+
 
             if (food.x !== -999) {
                 const pulse = Math.sin(frameCount * 0.22) * 1.5;
@@ -1968,8 +2918,7 @@
                     if (key === '+') idx = (idx + 1) % themesList.length;
                     else             idx = (idx - 1 + themesList.length) % themesList.length;
                     document.getElementById('themeSelect').value = themesList[idx];
-                    changeTheme(themesList[idx]);
-                } else if (key === '1') { toggleAddon('obstacles'); }
+                    changeTheme(themesList[idx]);                } else if (key === '1') { toggleAddon('obstacles'); }
                   else if (key === '2') { toggleAddon('hunger'); }
                   else if (key === '3') { toggleAddon('maiden'); }
                   else if (key === '4') { toggleAddon('poison'); }
@@ -2007,6 +2956,65 @@
         changeTheme('cyberpunk');
         updateMenuSelection();
         updateHighscoreDisplay();
+        loadAudioSettings();
+        loadSavedVolumes();
+
+        // ── CONTROLLER SUPPORT (PC & Mobile) ───────────────────────────────
+        let gamepadIndex = null;
+        let lastGamepadDir = null;
+
+        window.addEventListener('gamepadconnected', (e) => {
+            console.log('Controller connected:', e.gamepad.id);
+            playSoundStart(); // Feedback beim Verbinden
+        });
+
+        window.addEventListener('gamepaddisconnected', (e) => {
+            console.log('Controller disconnected');
+        });
+
+        function handleGamepadInput(gamepad) {
+            // P1: Linker Stick (axes 0/1) + D-Pad-Buttons (12-15)
+            const axisX = gamepad.axes[0];
+            const axisY = gamepad.axes[1];
+            const DEAD_ZONE = 0.5;
+
+            if      (axisX < -DEAD_ZONE) pushInput(p1, 'LEFT');
+            else if (axisX >  DEAD_ZONE) pushInput(p1, 'RIGHT');
+            else if (axisY < -DEAD_ZONE) pushInput(p1, 'UP');
+            else if (axisY >  DEAD_ZONE) pushInput(p1, 'DOWN');
+
+            // D-Pad Buttons: 12=UP, 13=DOWN, 14=LEFT, 15=RIGHT
+            if (gamepad.buttons[12]?.pressed) pushInput(p1, 'UP');
+            if (gamepad.buttons[13]?.pressed) pushInput(p1, 'DOWN');
+            if (gamepad.buttons[14]?.pressed) pushInput(p1, 'LEFT');
+            if (gamepad.buttons[15]?.pressed) pushInput(p1, 'RIGHT');
+
+            // P2 (Multiplayer): Rechter Stick (axes 2/3)
+            if (isMultiplayer && !p2.dead) {
+                const axisX2 = gamepad.axes[2];
+                const axisY2 = gamepad.axes[3];
+                if      (axisX2 < -DEAD_ZONE) pushInput(p2, 'LEFT');
+                else if (axisX2 >  DEAD_ZONE) pushInput(p2, 'RIGHT');
+                else if (axisY2 < -DEAD_ZONE) pushInput(p2, 'UP');
+                else if (axisY2 >  DEAD_ZONE) pushInput(p2, 'DOWN');
+            }
+
+            // Start (Button 9) = Spiel starten / Pause
+            if (gameState === 'MENU'   && gamepad.buttons[9]?.pressed) startGame();
+            if (gameState === 'PLAYING' && gamepad.buttons[9]?.pressed) pauseGame();
+            if (gameState === 'PAUSED' && gamepad.buttons[9]?.pressed) resumeGame();
+        }
+
+        function gamepadLoop() {
+            const gamepads = navigator.getGamepads ? navigator.getGamepads() : [];
+            for (let i = 0; i < gamepads.length; i++) {
+                if (gamepads[i]) handleGamepadInput(gamepads[i]);
+            }
+            requestAnimationFrame(gamepadLoop);
+        }
+
+        // Start Gamepad Loop
+        gamepadLoop();
     </script>
 </body>
 </html>

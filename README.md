@@ -1,4 +1,4 @@
-# 🐍 Snake Ultimate (v0.4)
+# 🐍 Snake Ultimate (v0.5)
 
 Snake Ultimate ist eine erweiterte Version des klassischen Arcade-Spiels "Snake". Das Projekt wurde vollständig in HTML5, CSS3 und Vanilla JavaScript entwickelt und kommt ohne externe Frameworks aus.
 
@@ -8,13 +8,14 @@ Es bietet neben dem klassischen Einzelspieler-Modus einen lokalen Multiplayer, 8
 
 ## 📸 Screenshots
 
-![Neon Cyberpunk Theme](image.png)
+![Neon Cyberpunk](image.png)
 Das Hauptmenü im „Neon Cyberpunk" Theme.
 
 ![Classic 3310 Theme](image-1.png)
 Das „Classic 3310" Theme beim Spielen.
 
-Und noch 6 weitere Styles!
+![Plants vs Zombies](image-2.jpg)
+Das Hauptmenü Mobile im "Plants vs Zombies" Theme.
 
 ---
 
@@ -120,6 +121,27 @@ Kompatibel mit allen modernen Browsern: Chrome, Firefox, Edge, Safari (Desktop &
 
 ## 🛠️ Entwicklung & Architektur
 
+### v0.5 – Sound, Controller & Visibility Update
+
+**Bugfixes (aus Bastis Entwicklungsbranch repariert):**
+- 🐛 **[KRITISCH]** `stopMusic()` prüfte `!musicEnabled` vor dem Stop → Musik ließ sich nicht ausschalten. Fix: Guard entfernt, nur noch `clearInterval`.
+- 🐛 **[KRITISCH]** `musicOscillators.push({})` fügte leere Objekte statt Oscillatoren hinzu → `osc.stop()` warf TypeError. Fix: Array nur für `clearInterval` genutzt, Noten terminieren sich selbst via `osc.stop(currentTime + duration)`.
+- 🐛 **[KRITISCH]** `currentMode` wurde in `startGame()` nie auf `'nightmare'` gesetzt → Nightmare-Musik spielte nie. Fix: `currentMode` wird jetzt korrekt beim Spielstart gesetzt.
+- 🐛 **[KRITISCH]** Gamepad-Achsenlogik grundlegend falsch – `Math.abs()` verlor Vorzeichen, `axes[4–7]` existieren nicht auf Standard-Controllern. Fix: Korrekte Vorzeichenprüfung auf `axes[0/1]` (P1) und `axes[2/3]` (P2), D-Pad via `buttons[12–15]`.
+- 🐛 `saveAudioSettings()` war doppelt deklariert (Zeile 922 und 1388) → zweite Deklaration überschrieb erste. Duplikat entfernt.
+- 🐛 Dark Forest Maiden-Block hatte 0-Einrückung (aus Funktions-Body „herausgefallen"). Einrückung korrigiert.
+
+**Features:**
+- ✅ **Sound Engine (Web Audio API):** 8-Bit Synth mit Square-, Sawtooth-, Triangle-Wave und Noise-Generator.
+- ✅ **Soundeffekte:** Fressen, Gift-Apfel, Crash (Wall/Body/Obstacle/Maiden/Hunter), Pause, Resume, Game Over – jeweils eigene Varianten für Normal- und Nightmare-Modus.
+- ✅ **8-Bit Hintergrundmusik:** Loopender Sequencer via `setInterval`, theme-sensitiv (Normal vs. Nightmare), startet automatisch mit Spielstart.
+- ✅ **Audio-Toggles im Menü:** `🔊 SFX` und `🎵 MUSIK` Buttons mit visuellem Aktivzustand. Lautstärke-Slider (0–100%) für SFX und Musik separat. Einstellungen werden in `localStorage` persistiert.
+- ✅ **Keyboard-Shortcuts für Audio:** `[M]` = Mute, `[S]` = SFX toggle, `[U]` = Musik toggle (nur außerhalb von PLAYING).
+- ✅ **Controller-Support (Gamepad API):** Linker Stick + D-Pad-Buttons (P1), rechter Stick (P2 im Multiplayer). Start/Select = Pause/Resume.
+- ✅ **Gitterlinien-Sichtbarkeit erhöht:** Cyberpunk (0.05→0.3 Opacity, 1→2px), Matrix (0.04→0.25 Opacity, +Scanlines verstärkt), Vaporwave (0.25→0.4 Opacity, Perspektivgrid doppelt gezeichnet), Retro (zusätzliches Pixel-Raster).
+- ✅ **Eiserne Jungfrau Sichtbarkeit erhöht:** Alle 8 Themes mit stärkerem Glow (`shadowBlur` erhöht), dickeren Rahmen (1→3px), ausgefüllten Blöcken mit Leuchte-Overlay.
+- ✅ **Neue Geschwindigkeitsmodi:** LEICHT 175ms (war 150ms), neu: LANGSAM 125ms – insgesamt 6 Stufen.
+
 ### v0.4 – Performance & Balance Update
 
 Basierend auf einer systematischen Codeanalyse wurden kritische Bugs behoben, die Game Loop performanter gestaltet und neue Komfort-Features ergänzt.
@@ -171,12 +193,8 @@ Klare Trennung der Rendering-Logik pro Theme. State-Machine (MENU → PLAYING �
 
 ## 📋 Geplante Erweiterungen
 
-- [ ] Soundeffekte + 8bit Music inclusive on/off toggle
-- [ ] Multiplayer-D-Pad auf Mobile (getrennte Zonen für P1/P2)
-- [ ] Sichtbarkeit der Gitterlinien erhöhen
-- [ ] Sichtbarkeit der "Eisernen Jungfrau" erhöhen
-- [ ] Mehr Geschwindigkeitsmodi (125ms und 175ms)
-- [ ] Controller Unterstützung für Mobile und PC hinzufügen
+- [ ] Sound- & Visual-Design Verbesserungen
+- [ ] Mobile Qwerformat Skalierung Spielfeld verbessern
 
 ---
 
