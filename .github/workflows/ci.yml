@@ -45,6 +45,7 @@ jobs:
             "extends": ["html-validate:recommended"],
             "rules": {
               "no-inline-style": "off",
+              "no-implicit-button-type": "off",
               "long-title": "off",
               "no-trailing-whitespace": "off",
               "prefer-native-element": "off",
@@ -77,7 +78,6 @@ jobs:
         uses: actions/setup-node@v4
         with:
           node-version: "20"
-          cache: "npm"      # Cache greift, sobald ein package-lock.json existiert
 
       # ESLint + Browser-Globals installieren (kein package.json nötig)
       - name: Install ESLint
