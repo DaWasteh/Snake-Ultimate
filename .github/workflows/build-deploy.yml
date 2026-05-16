@@ -25,7 +25,7 @@ jobs:
       - name: Setup Node.js
         uses: actions/setup-node@v4
         with:
-          node-version: '20'
+          node-version: '22'
           cache: null
 
       - name: Install htmlhint
@@ -33,6 +33,22 @@ jobs:
 
       - name: Run HTMLHint
         run: htmlhint --format compact snake_ultimate.html || true
+
+  html-validate:
+    name: HTML Validate
+    runs-on: ubuntu-latest
+    steps:
+      - name: Checkout repository
+        uses: actions/checkout@v4
+
+      - name: Setup Node.js
+        uses: actions/setup-node@v4
+        with:
+          node-version: '22'
+          cache: null
+
+      - name: Run html-validate
+        run: npx --yes html-validate@latest snake_ultimate.html || true
 
   build:
     name: Build & Validate
