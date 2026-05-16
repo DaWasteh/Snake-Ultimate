@@ -35,7 +35,7 @@ jobs:
       - name: Setup Node.js
         uses: actions/setup-node@v4
         with:
-          node-version: "20"
+          node-version: "22"
 
       # Inline-Config: erlaubt <script> inline & moderne HTML5-Elemente
       - name: Write html-validate config
@@ -57,7 +57,7 @@ jobs:
           EOF
 
       - name: Run html-validate
-        run: npx --yes html-validate@latest "$MAIN_FILE"
+        run: npx --yes html-validate@latest ${{ env.MAIN_FILE }}
 
 
 # ═════════════════════════════════════════════════════════════════════════
