@@ -2,6 +2,8 @@
 
 Snake Ultimate ist eine erweiterte Version des klassischen Arcade-Spiels "Snake". Das Projekt wurde vollständig in HTML5, CSS3 und Vanilla JavaScript entwickelt und kommt ohne externe Frameworks aus.
 
+🎮 **Live spielen:** <https://dawasteh.github.io/Snake-Ultimate/>
+
 Es bietet neben dem klassischen Einzelspieler-Modus einen lokalen Multiplayer, 8 visuelle Themes und anpassbare Spielmechaniken (Addons) – vollständig optimiert für Desktop, Tablet und Mobile.
 
 ---
@@ -106,6 +108,10 @@ Die Spielgeschwindigkeit und zusätzliche Mechaniken lassen sich modular anpasse
 ## 🚀 Installation & Start
 
 Das Spiel läuft vollständig clientseitig im Browser, es wird kein lokaler Server benötigt.
+
+**Online spielen:** <https://dawasteh.github.io/Snake-Ultimate/>
+
+Oder lokal ausführen:
 
 ```bash
 # Repository klonen

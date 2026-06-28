@@ -7,8 +7,7 @@ on:
       - '*.md'
   pull_request:
     branches: [main, master]
-  release:
-    types: [published]
+  workflow_dispatch:
 
 env:
   GAME_VERSION: '1.0'
@@ -81,13 +80,20 @@ jobs:
           if-no-files-found: error
 
   release:
-    name: Create Release
+    name: Auto Release
     runs-on: ubuntu-latest
     needs: [lint, build]
-    if: github.event_name == 'release'
+    if: github.ref == 'refs/heads/main' && github.event_name == 'push'
+    permissions:
+      contents: write
+    concurrency:
+      group: release-${{ github.ref }}
+      cancel-in-progress: false
     steps:
       - name: Checkout repository
         uses: actions/checkout@v4
+        with:
+          fetch-depth: 0
 
       - name: Download build artifact
         uses: actions/download-artifact@v4
@@ -96,19 +102,32 @@ jobs:
           path: release-artifacts/
 
       - name: Create release archive
-        run: |
-          cd release-artifacts
-          zip -r ../snake-ultimate-${{ github.event.release.tag_name }}.zip .
-
-      - name: Upload release asset
-        uses: actions/upload-release-asset@v1
         env:
-          GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }}
-        with:
-          upload_url: ${{ github.event.release.upload_url }}
-          asset_path: ./snake-ultimate-${{ github.event.release.tag_name }}.zip
-          asset_name: snake-ultimate-${{ github.event.release.tag_name }}.zip
-          asset_content_type: application/zip
+          RELEASE_TAG: v${{ env.GAME_VERSION }}.${{ github.run_number }}
+        run: |
+          set -eu
+          archive="snake-ultimate-${RELEASE_TAG}.zip"
+          cd release-artifacts
+          zip -r "../$archive" .
+          printf 'ARCHIVE=%s\n' "../$archive" >> "$GITHUB_ENV"
+
+      - name: Create GitHub Release
+        env:
+          GH_TOKEN: ${{ secrets.GITHUB_TOKEN }}
+          RELEASE_TAG: v${{ env.GAME_VERSION }}.${{ github.run_number }}
+        run: |
+          set -eu
+          if gh release view "$RELEASE_TAG" --repo "${{ github.repository }}" >/dev/null 2>&1; then
+            echo "Release $RELEASE_TAG already exists – skipping."
+            exit 0
+          fi
+          gh release create "$RELEASE_TAG" \
+            "$ARCHIVE" \
+            --repo "${{ github.repository }}" \
+            --target "${{ github.event.repository.default_branch }}" \
+            --title "Snake Ultimate $RELEASE_TAG" \
+            --generate-notes \
+            --latest
 
   pages:
     name: Deploy to GitHub Pages
